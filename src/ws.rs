@@ -63,6 +63,15 @@ impl WsClient {
         return self.parse_response(&value)
     }
 
+    pub fn replace_level_string(&mut self, string: &String) -> Result<String, String> {
+        let json_data = json!({
+            "action": "REPLACE_LEVEL_STRING",
+            "levelString": string
+        });
+        let value = self.send_and_receive(&json_data).map_err(|e| "An error occurred while sending or receiving a message from the server.")?;
+        return self.parse_response(&value)
+    }
+
     pub fn disconnect(mut self) -> Result<()> {
         self.stream.close(None)?;
         let _ = self.stream.read();
@@ -78,6 +87,16 @@ mod tests {
     fn get_level_string_test() {
         let mut ws = WsClient::connect().unwrap();
         let ret = ws.get_level_string();
+
+        assert!(ret.is_ok());
+        println!("{}", ret.unwrap())
+    }
+
+    #[test]
+    fn replace_level_string_test() {
+        let mut ws = WsClient::connect().unwrap();
+        let string = "kS38,1_40_2_125_3_255_11_255_12_255_13_255_4_-1_6_1000_7_1_15_1_18_0_8_1|,kA12,1,;".to_string();
+        let ret = ws.replace_level_string(&string);
 
         assert!(ret.is_ok());
         println!("{}", ret.unwrap())
