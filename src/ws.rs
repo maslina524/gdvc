@@ -69,3 +69,17 @@ impl WsClient {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::ws::WsClient;
+
+    #[test]
+    fn get_level_string_test() {
+        let mut ws = WsClient::connect().unwrap();
+        let ret = ws.get_level_string();
+
+        assert!(ret.is_ok());
+        println!("{}", ret.unwrap())
+    }
+}
