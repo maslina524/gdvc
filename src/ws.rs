@@ -9,10 +9,13 @@ pub struct WsClient {
 }
 
 impl WsClient {
-    pub fn connect() -> Result<Self> {
+    pub fn connect() -> Result<Self, String> {
         let url = "ws://localhost:1313";
-        let (stream, _) = connect(url)?;
-        Ok(WsClient { stream })
+        if let Ok((stream, _)) = connect(url) {
+            return Ok(WsClient { stream })
+        } else {
+            return Err("Make sure that the editor is enabled and the mod is installed".to_string())
+        }
     }
 
     fn send_and_receive(&mut self, json: &Value) -> Result<Value> {
