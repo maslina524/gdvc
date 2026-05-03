@@ -101,4 +101,24 @@ mod tests {
         assert!(ret.is_ok());
         println!("{}", ret.unwrap())
     }
+
+    #[test]
+    fn unused_level_prop_test() {
+        let mut ws = WsClient::connect().unwrap();
+
+        let old_string = ws.get_level_string().unwrap();
+
+        let semicolon_i = old_string.find(';').unwrap();
+        let replace_string = &mut old_string[..semicolon_i].to_string();
+        replace_string.push_str(&",kA26,-2147483647");
+        replace_string.push_str(&old_string[semicolon_i..]);
+
+        let _ = ws.replace_level_string(replace_string);
+
+        let new_string = ws.get_level_string().unwrap();
+
+        let _ = ws.replace_level_string(&old_string);
+
+        assert_ne!(new_string, old_string)
+    }
 }
