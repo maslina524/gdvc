@@ -1,5 +1,5 @@
-use anyhow::Result;
-use serde_json::{Value};
+use anyhow::{Result};
+use serde_json::{json, Value};
 use tungstenite::{Message, Utf8Bytes, WebSocket, connect};
 use tungstenite::stream::MaybeTlsStream;
 use std::net::TcpStream;
@@ -31,6 +31,36 @@ impl WsClient {
             }
             _ => Err(anyhow::anyhow!("Unexpected response from the server.")),
         }
+    }
+
+    fn parse_response(&self, value: &Value) -> Result<String, String> {
+        let map = value.as_object().ok_or("Response is not a map")?;
+        let status = map.get("status").ok_or("No status in the map")?.as_str().unwrap();
+
+        match status {
+            "successful" => {
+                let ret = match map.get("response") {
+                    Some(v) => v.as_str().unwrap().to_string(),
+                    None => String::new()
+                };
+                return Ok(ret);
+            }
+            _ => {
+                let ret = match map.get("message") {
+                    Some(v) => v.as_str().unwrap().to_string(),
+                    None => String::new()
+                };
+                return Err(ret);
+            }
+        }
+    }
+
+    pub fn get_level_string(&mut self) -> Result<String, String> {
+        let json_data = json!({
+            "action": "GET_LEVEL_STRING"
+        });
+        let value = self.send_and_receive(&json_data).map_err(|e| "An error occurred while sending or receiving a message from the server.")?;
+        return self.parse_response(&value)
     }
 
     pub fn disconnect(mut self) -> Result<()> {
