@@ -36,7 +36,11 @@ pub fn set_marker(string: &String, timestamp: u32) -> String {
         if chunk.len() == 2 {
             let key = chunk[0];
             let value = if key == SECRET_KEY {
-                let shifted = timestamp as i64 - (i32::MIN as i64);
+                let shifted = if timestamp != 0 {
+                    timestamp as i64 - (i32::MIN as i64)
+                } else {
+                    0
+                };
                 (shifted as i32).to_string()
             } else {
                 chunk[1].to_string()
