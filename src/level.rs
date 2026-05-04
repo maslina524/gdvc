@@ -1,42 +1,36 @@
-pub fn get_timestamp(string: &String) -> Option<u32> {
-    let split_i = string.find(';').unwrap();
-    
-    let binding = string[..split_i]
-        .split(",")
-        .collect::<Vec<&str>>();
-    
-    let props = binding.chunks(2).collect::<Vec<&[&str]>>();
+use crate::consts::SECRET_KEY;
 
-    for prop in props {
-        if prop[0] != "kA26" {
-            continue;
-        }
-
-        let result = prop[1].parse::<i32>();
-        if let Ok(n) = result {
-            return Some((n as i32 + i32::MIN) as u32)
-        } else {
+pub fn get_marker(string: &str) -> Option<u32> {
+    let semicolon_pos = string.find(';')?;
+    let before = &string[..semicolon_pos];
+    
+    let pairs: Vec<&str> = before.split(',').collect();
+    for chunk in pairs.chunks(2) {
+        if chunk.len() == 2 && chunk[0] == SECRET_KEY {
+            let result = chunk[1].parse::<i32>();
+            if let Ok(marker) = result {
+                if marker != 0 {
+                    return Some((marker as i64 + (i32::MIN as i64)) as u32)
+                }
+            }
             return None
         }
     }
-
     None
 }
 
-pub fn set_timestamp(string: &String, timestamp: u32) -> String {
+pub fn set_marker(string: &String, timestamp: u32) -> String {
     let split_i = string.find(';').unwrap();
-    let object_string = &string[split_i..]; // часть после ';', включая ';'
+    let object_string = &string[split_i..];
 
     let parts_before = &string[..split_i];
     let tokens: Vec<&str> = parts_before.split(',').collect();
-    // Ожидаем чётное количество токенов: ключ1, значение1, ключ2, значение2, ...
     let mut new_parts = Vec::new();
 
     for chunk in tokens.chunks(2) {
         if chunk.len() == 2 {
             let key = chunk[0];
-            let value = if key == "kA26" {
-                // Вычисляем сдвиг: timestamp -> i32 с помощью i32::MIN
+            let value = if key == SECRET_KEY {
                 let shifted = timestamp as i64 - (i32::MIN as i64);
                 (shifted as i32).to_string()
             } else {
