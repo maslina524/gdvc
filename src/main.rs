@@ -28,21 +28,25 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
     
-    let status: Result<(), String> = match cli.command {
-        Some(Commands::Init) => {
-            cmds::init()
-        },
-        Some(Commands::Help) => {
-            cmds::help();
-            Ok(())
-        },
-        Some(Commands::Other(args)) => {
-            let cmd_name = args.first().unwrap();
-            Err(format!("gdvc: `{cmd_name}` is not a gdvc command."))
-        },
+    let cmd = match cli.command {
+        Some(c) => c,
         None => {
             cmds::help();
+            std::process::exit(0);
+        }
+    };
+
+    let status: Result<(), String> = match cmd {
+        Commands::Init => {
+            cmds::init()
+        },
+        Commands::Help => {
+            cmds::help();
             Ok(())
+        },
+        Commands::Other(args) => {
+            let cmd_name = args.first().unwrap();
+            Err(format!("gdvc: `{cmd_name}` is not a gdvc command."))
         }
     };
 
