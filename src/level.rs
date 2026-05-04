@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::io::{Read, Write};
 
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
@@ -65,15 +65,36 @@ pub fn encode_string(string: &String) -> Result<String, String> {
     Ok(base64_encoded)
 }
 
+/// https://boomlings.dev/topics/levelstring_encoding_decoding#decoding
+pub fn decode_string(string: &String) -> Result<String, String> {
+    let base64_decoded = BASE64_URL_SAFE.decode(string).unwrap();
+
+    let mut decoder = Decoder::new(&base64_decoded[..]).unwrap();
+    let mut decompressed = Vec::new();
+    decoder.read_to_end(&mut decompressed).map_err(|_| "Failed to compress the level using gzip.")?; 
+
+    let decompressed_string = String::from_utf8(decompressed).unwrap();
+    Ok(decompressed_string)
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::level::encode_string;
+    use crate::level::{decode_string, encode_string};
 
     #[test]
     fn encode_string_test() {
         let string = String::from("1,914,2,15,3,45;");
-        let encoded = encode_string(&string).unwrap();
+        let encoded = encode_string(&string);
         
-        assert_eq!(encoded, "H4sIAPG--GkAAwXAsREAAAjCwIXSoFB47r8XL05mUFicL48ckc0QAAAA")
+        assert!(encoded.is_ok())
+    }
+
+    #[test]
+    fn decode_string_test() {
+        let string = String::from("1,914,2,15,3,45;");
+        let encoded = encode_string(&string).unwrap();
+        let decoded = decode_string(&encoded).unwrap();
+        
+        assert_eq!(decoded, string)
     }
 }
