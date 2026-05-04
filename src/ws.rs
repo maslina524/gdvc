@@ -84,7 +84,7 @@ impl WsClient {
 
 #[cfg(test)]
 mod tests {
-    use crate::ws::WsClient;
+    use crate::{consts::SECRET_KEY, ws::WsClient};
 
     #[test]
     fn get_level_string_test() {
@@ -113,7 +113,7 @@ mod tests {
 
         let semicolon_i = old_string.find(';').unwrap();
         let replace_string = &mut old_string[..semicolon_i].to_string();
-        replace_string.push_str(&",kA26,-2147483647");
+        replace_string.push_str(&format!(",{},-2147483647", SECRET_KEY));
         replace_string.push_str(&old_string[semicolon_i..]);
 
         let _ = ws.replace_level_string(replace_string);
