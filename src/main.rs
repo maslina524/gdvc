@@ -1,6 +1,9 @@
 use clap::{Parser, Subcommand};
 
 mod cmds;
+mod ws;
+mod level;
+mod consts;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]
@@ -14,6 +17,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    Init,
+
     Help,
 
     #[command(external_subcommand)]
@@ -24,6 +29,9 @@ fn main() {
     let cli = Cli::parse();
     
     let status: Result<(), String> = match cli.command {
+        Some(Commands::Init) => {
+            cmds::init()
+        },
         Some(Commands::Help) => {
             cmds::help();
             Ok(())
@@ -31,7 +39,7 @@ fn main() {
         Some(Commands::Other(args)) => {
             let cmd_name = args.first().unwrap();
             Err(format!("gdvc: `{cmd_name}` is not a gdvc command."))
-        }
+        },
         None => {
             cmds::help();
             Ok(())
