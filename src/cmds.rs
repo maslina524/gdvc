@@ -74,7 +74,7 @@ pub fn destroy(force: bool, hard: bool) -> Result<(), String> {
 
     if hard {
         let path = files::get_level_path(marker);
-        let ret = fs::remove_dir_all(&path);
+        let _ = fs::remove_dir_all(&path);
     }
     
     let new_string = set_marker(&mut string, 0);

@@ -20,6 +20,17 @@ struct Cli {
 enum Commands {
     Init,
 
+    Destroy {
+        #[arg(short = 'f', long = "force", required = false)]
+        force: bool,
+
+        #[arg(long, conflicts_with = "hard")]
+        _soft: bool,
+        
+        #[arg(long, conflicts_with = "_soft")]
+        hard: bool,
+    },
+
     Commit {
         #[arg(short = 'm', long = "message", required = true)]
         message: String,
@@ -48,7 +59,10 @@ fn main() {
         },
         Commands::Commit { message } => {
             cmds::commit(&message)
-        }
+        },
+        Commands::Destroy { force, _soft, hard } => {
+            cmds::destroy(force, hard)
+        },
         Commands::Help => {
             cmds::help();
             Ok(())
