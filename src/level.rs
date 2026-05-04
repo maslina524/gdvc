@@ -1,3 +1,8 @@
+use std::io::Write;
+
+use libflate::gzip::{Encoder, Decoder};
+use base64::prelude::*;
+
 use crate::consts::SECRET_KEY;
 
 pub fn get_marker(string: &str) -> Option<u32> {
@@ -43,4 +48,32 @@ pub fn set_marker(string: &String, timestamp: u32) -> String {
     let mut ret = new_parts.join(",");
     ret.push_str(object_string);
     ret
+}
+
+/// https://boomlings.dev/topics/levelstring_encoding_decoding#encoding
+pub fn encode_string(string: &String) -> Result<String, String> {
+    let mut encoder = Encoder::new(Vec::new()).unwrap();
+    encoder.write_all(string.as_ref()).unwrap();
+
+    let gzipped = encoder
+        .finish()
+        .into_result()
+        .map_err(|_| "Failed to compress the level using gzip.")?;
+
+    let base64_encoded = BASE64_URL_SAFE.encode(gzipped);
+
+    Ok(base64_encoded)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::level::encode_string;
+
+    #[test]
+    fn encode_string_test() {
+        let string = String::from("1,914,2,15,3,45;");
+        let encoded = encode_string(&string).unwrap();
+        
+        assert_eq!(encoded, "H4sIAPG--GkAAwXAsREAAAjCwIXSoFB47r8XL05mUFicL48ckc0QAAAA")
+    }
 }
