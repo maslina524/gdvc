@@ -11,10 +11,14 @@ use crate::files;
 use crate::consts::{YELLOW_COLOR, ESC_COLOR};
 
 pub fn help() {
-    println!("usage: gdvc <command> [<args>]\n");
+    println!("usage: gdvc <command> [<args>]");
 
-    println!("start a working area");
-    println!("    init        Initialize your level for Gdvc")
+    println!("\nstart a working area");
+    println!("    init        Initialize your level for gdvc");
+    println!("    destroy     Remove all gdvc tracking");
+
+    println!("\nwork on the current");
+    println!("    commit      Record changes to the level");
 }
 
 pub fn init() -> Result<(), String> {
