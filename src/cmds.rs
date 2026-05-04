@@ -5,6 +5,9 @@ use crate::level::{self, set_marker};
 
 pub fn help() {
     println!("usage: gdvc <command> [<args>]\n");
+
+    println!("start a working area");
+    println!("    init        Initialize your level for Gdvc")
 }
 
 pub fn init() -> Result<(), String> {
@@ -13,9 +16,8 @@ pub fn init() -> Result<(), String> {
     let mut string = ws.get_level_string()?;
     let marker = level::get_marker(&string);
 
-    if let Some(c) = marker {
-        println!("{c}");
-        println!("gdvc is already initialized at this level");
+    if let Some(_) = marker {
+        println!("Gdvc is already initialized at this level.");
         return Ok(())
     }
 
