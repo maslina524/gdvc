@@ -62,7 +62,7 @@ impl WsClient {
         let json_data = json!({
             "action": "GET_LEVEL_STRING"
         });
-        let value = self.send_and_receive(&json_data).map_err(|e| "An error occurred while sending or receiving a message from the server.")?;
+        let value = self.send_and_receive(&json_data).map_err(|_| "An error occurred while sending or receiving a message from the server.")?;
         return self.parse_response(&value)
     }
 
@@ -71,7 +71,7 @@ impl WsClient {
             "action": "REPLACE_LEVEL_STRING",
             "levelString": string
         });
-        let value = self.send_and_receive(&json_data).map_err(|e| "An error occurred while sending or receiving a message from the server.")?;
+        let value = self.send_and_receive(&json_data).map_err(|_| "An error occurred while sending or receiving a message from the server.")?;
         return self.parse_response(&value)
     }
 
