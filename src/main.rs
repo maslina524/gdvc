@@ -4,6 +4,7 @@ mod cmds;
 mod ws;
 mod level;
 mod consts;
+mod files;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]
@@ -18,6 +19,11 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Init,
+
+    Commit {
+        #[arg(short = 'm', long = "message", required = true)]
+        message: String,
+    },
 
     Help,
 
@@ -40,6 +46,9 @@ fn main() {
         Commands::Init => {
             cmds::init()
         },
+        Commands::Commit { message } => {
+            cmds::commit(&message)
+        }
         Commands::Help => {
             cmds::help();
             Ok(())
