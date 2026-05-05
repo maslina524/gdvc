@@ -32,8 +32,7 @@ pub fn run(message: &String) -> Result<(), String> {
     ].join("\n");
 
     let hash = Sha256::digest(&file_data);
-    let full_hash = hex::encode(hash);
-    let hex_hash = &full_hash[..7];
+    let hex_hash = hex::encode(hash);
 
     let commit_path = files::get_level_path(marker).join("commits").join(hex_hash);
     let mut file = File::create(commit_path)
