@@ -86,7 +86,7 @@ fn main() {
             actions::destroy::run(force, hard)
         },
         Commands::Log { oneline } => {
-            cmds::log(oneline)
+            actions::log::run(oneline)
         },
         Commands::Help => {
             actions::help::run();
