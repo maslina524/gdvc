@@ -83,7 +83,7 @@ pub fn decode_string(string: &String) -> Result<String, String> {
     Ok(decompressed_string)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Commit {
     hash: String,
     timestamp: u32,
@@ -128,6 +128,20 @@ pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {
             message: message
         }
     )
+}
+
+pub fn sort_commits(commits: &mut Vec<Commit>) {
+    // INSERTION SORT BY TIMESTAMP
+    for i in 1..commits.len() {
+        let key = commits[i].clone();
+        let mut j = i as i32 - 1;
+
+        while j >= 0 && commits[j as usize].timestamp > key.timestamp {
+            commits[(j + 1) as usize] = commits[j as usize].clone();
+            j -= 1;
+        }
+        commits[(j + 1) as usize] = key;
+    }
 }
 
 #[cfg(test)]
