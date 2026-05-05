@@ -11,7 +11,8 @@ use crate::files;
 use crate::consts::{YELLOW_COLOR, ESC_COLOR};
 
 pub fn help() {
-    println!("usage: gdvc <command> [<args>]");
+    println!("usage: gdvc [-v | --version] [-p | --path]");
+    println!("            <command> [<args>]");
 
     println!("\nstart a working area");
     println!("    init        Initialize your level for gdvc");
