@@ -83,23 +83,57 @@ pub fn decode_string(string: &String) -> Result<String, String> {
     Ok(decompressed_string)
 }
 
-pub fn read_commit_meta(path: &PathBuf) -> io::Result<Vec<String>> {
-    let file = File::open(path)?;
+#[derive(Debug)]
+pub struct Commit {
+    hash: String,
+    timestamp: u32,
+    message: String
+}
+
+pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {
+    // Reading meta-data from file
+    let file = File::open(&path)?;
     let reader = BufReader::new(file);
-    let mut ret = vec![];
+    let mut lines = vec![];
 
     for line in reader.lines() {
         let line = line?;
         if line.is_empty() {
             break;
         }
-        ret.push(line);
+        lines.push(line);
     }
-    Ok(ret)
+    
+    // Generate Commit struct
+    let hash = path
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("no hash")
+        .to_string();
+
+    let timestamp = lines
+        .get(0)
+        .and_then(|t| t.parse::<u32>().ok())
+        .unwrap_or(0);
+
+    let message = lines
+        .get(1)
+        .cloned()
+        .unwrap_or(String::new());
+
+    Ok(
+        Commit {
+            hash: hash,
+            timestamp: timestamp,
+            message: message
+        }
+    )
 }
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+
     use crate::{files::get_level_path, level::{decode_string, encode_string, read_commit_meta}};
 
     #[test]
@@ -121,7 +155,10 @@ mod tests {
 
     #[test]
     fn read_commit_meta_test() {
-        let path = get_level_path(1777940517).join("commits").join("d8b9fa71a1addd918b314331fccca8e844397c68d33381558abdb7eae6265c32");
-        println!("{:#?}", read_commit_meta(&path).unwrap());
+        let path = get_level_path(1777940517).join("commits");
+        let files = fs::read_dir(path).unwrap();
+        for file in files {
+            println!("{:?}", read_commit_meta(file.unwrap().path()).unwrap());
+        }
     }
 }
