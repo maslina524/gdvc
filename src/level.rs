@@ -1,4 +1,6 @@
-use std::io::{Read, Write};
+use std::io::{self, Read, Write, BufRead, BufReader};
+use std::fs::File;
+use std::path::PathBuf;
 
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
@@ -81,9 +83,24 @@ pub fn decode_string(string: &String) -> Result<String, String> {
     Ok(decompressed_string)
 }
 
+pub fn read_commit_meta(path: &PathBuf) -> io::Result<Vec<String>> {
+    let file = File::open(path)?;
+    let reader = BufReader::new(file);
+    let mut ret = vec![];
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.is_empty() {
+            break;
+        }
+        ret.push(line);
+    }
+    Ok(ret)
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::level::{decode_string, encode_string};
+    use crate::{files::get_level_path, level::{decode_string, encode_string, read_commit_meta}};
 
     #[test]
     fn encode_string_test() {
@@ -100,5 +117,11 @@ mod tests {
         let decoded = decode_string(&encoded).unwrap();
         
         assert_eq!(decoded, string)
+    }
+
+    #[test]
+    fn read_commit_meta_test() {
+        let path = get_level_path(1777940517).join("commits").join("d8b9fa71a1addd918b314331fccca8e844397c68d33381558abdb7eae6265c32");
+        println!("{:#?}", read_commit_meta(&path).unwrap());
     }
 }
