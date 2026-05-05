@@ -127,7 +127,7 @@ pub fn commit(message: &String) -> Result<(), String> {
     Ok(())
 }
 
-pub fn log() -> Result<(), String> {
+pub fn log(oneline: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
@@ -144,6 +144,10 @@ pub fn log() -> Result<(), String> {
             .map_err(|e| format!("Failed to get commit meta: {e}"))?;
         commits.push(cur_commit);
     }
+
+    if commits.is_empty() {
+        return Ok(())
+    }
     
     level::sort_commits(&mut commits);
     commits.reverse();
@@ -151,6 +155,21 @@ pub fn log() -> Result<(), String> {
     let mut lines = vec![];
     let mut is_head = true;
     for commit in commits {
+        if oneline {
+            if is_head {
+                lines.push(format!(
+                    "{}{} <- ({}HEAD{}){} {}",
+                    YELLOW_COLOR, &commit.hash[..7], BLUE_COLOR, YELLOW_COLOR, ESC_COLOR, commit.message
+                ));
+                is_head = false;
+                continue;
+            }
+            lines.push(format!(
+                "{}{}{} {}",
+                YELLOW_COLOR, &commit.hash[..7], ESC_COLOR, commit.message
+            ));
+            continue;
+        }
         let mut head_string = format!(
             "{}commit {}{}",
             YELLOW_COLOR, commit.hash, ESC_COLOR
