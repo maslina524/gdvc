@@ -1,4 +1,7 @@
+use std::env::current_exe;
 use clap::{Parser, Subcommand};
+
+use crate::consts::VERSION;
 
 mod cmds;
 mod ws;
@@ -12,6 +15,12 @@ mod files;
 #[command(disable_help_subcommand = true)]
 #[command(subcommand_required = false)]
 struct Cli {
+    #[arg(short = 'v', long = "version", global = true, conflicts_with = "path")]
+    version: bool,
+
+    #[arg(short = 'p', long = "path", global = true, conflicts_with = "version")]
+    path: bool,
+
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -48,7 +57,14 @@ fn main() {
     let cmd = match cli.command {
         Some(c) => c,
         None => {
-            cmds::help();
+            if cli.path {
+                let path = current_exe().unwrap().display().to_string();
+                println!("{path}");
+            } else if cli.version {
+                println!("gdvc v{VERSION}");
+            } else {
+                cmds::help();
+            }
             std::process::exit(0);
         }
     };
