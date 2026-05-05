@@ -8,6 +8,7 @@ mod ws;
 mod level;
 mod consts;
 mod files;
+mod actions;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]
@@ -68,7 +69,7 @@ fn main() {
             } else if cli.version {
                 println!("gdvc v{VERSION}");
             } else {
-                cmds::help();
+                actions::help::run();
             }
             std::process::exit(0);
         }
@@ -88,7 +89,7 @@ fn main() {
             cmds::log(oneline)
         },
         Commands::Help => {
-            cmds::help();
+            actions::help::run();
             Ok(())
         },
         Commands::Other(args) => {
