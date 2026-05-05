@@ -45,7 +45,10 @@ enum Commands {
         message: String,
     },
 
-    Log {},
+    Log {
+        #[arg(long = "oneline", required = false)]
+        oneline: bool,
+    },
 
     Help,
 
@@ -81,8 +84,8 @@ fn main() {
         Commands::Destroy { force, _soft, hard } => {
             cmds::destroy(force, hard)
         },
-        Commands::Log {  } => {
-            cmds::log()
+        Commands::Log { oneline } => {
+            cmds::log(oneline)
         },
         Commands::Help => {
             cmds::help();
