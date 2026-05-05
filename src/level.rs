@@ -2,10 +2,11 @@ use std::io::{self, Read, Write, BufRead, BufReader};
 use std::fs::File;
 use std::path::PathBuf;
 
+use chrono::{DateTime, FixedOffset};
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
 
-use crate::consts::SECRET_KEY;
+use crate::consts::{SECRET_KEY, YELLOW_COLOR, BLUE_COLOR, ESC_COLOR};
 
 pub fn get_marker(string: &str) -> Option<u32> {
     let semicolon_pos = string.find(';')?;
@@ -88,6 +89,53 @@ pub struct Commit {
     pub hash: String,
     pub timestamp: u32,
     pub message: String
+}
+
+impl Commit {
+    pub fn format_multiline(&self, is_head: bool) -> String {
+        let mut ret = String::new();
+
+        ret.push_str(&format!(
+            "{}commit {}{}",
+            YELLOW_COLOR, self.hash, ESC_COLOR
+        ));
+
+        if is_head {
+            ret.push_str(&format!(
+                "{} <- {}HEAD{}",
+                YELLOW_COLOR, BLUE_COLOR, ESC_COLOR
+            ));
+        }
+        ret.push('\n');
+
+        let dt = DateTime::from_timestamp(self.timestamp as i64, 0)
+            .expect("Invalid timestamp")
+            .with_timezone(&FixedOffset::east_opt(3 * 3600).unwrap());
+        
+        let timestamp_str = dt.format("%a %b %e %H:%M:%S %Y %z").to_string();
+        ret.push_str(&format!("Date: {timestamp_str}\n"));
+        ret.push('\n');
+        ret.push_str(&format!("    {}\n", self.message));
+        ret.push('\n');
+
+        ret
+    }
+    
+    pub fn format_oneline(&self, is_head: bool) -> String {
+        let ret;
+        if is_head {
+            ret = format!(
+                "{}{} <- ({}HEAD{}){} {}",
+                YELLOW_COLOR, &self.hash[..7], BLUE_COLOR, YELLOW_COLOR, ESC_COLOR, self.message
+            );
+        } else {
+            ret = format!(
+                "{}{}{} {}",
+                YELLOW_COLOR, &self.hash[..7], ESC_COLOR, self.message
+            );
+        }
+        ret
+    }
 }
 
 pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {
