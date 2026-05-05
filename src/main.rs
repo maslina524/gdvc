@@ -45,6 +45,8 @@ enum Commands {
         message: String,
     },
 
+    Log {},
+
     Help,
 
     #[command(external_subcommand)]
@@ -78,6 +80,9 @@ fn main() {
         },
         Commands::Destroy { force, _soft, hard } => {
             cmds::destroy(force, hard)
+        },
+        Commands::Log {  } => {
+            cmds::log()
         },
         Commands::Help => {
             cmds::help();
