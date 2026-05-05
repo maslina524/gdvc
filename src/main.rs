@@ -77,7 +77,7 @@ fn main() {
 
     let status: Result<(), String> = match cmd {
         Commands::Init => {
-            cmds::init()
+            actions::init::run()
         },
         Commands::Commit { message } => {
             cmds::commit(&message)
