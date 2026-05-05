@@ -83,7 +83,7 @@ fn main() {
             cmds::commit(&message)
         },
         Commands::Destroy { force, _soft, hard } => {
-            cmds::destroy(force, hard)
+            actions::destroy::run(force, hard)
         },
         Commands::Log { oneline } => {
             cmds::log(oneline)
