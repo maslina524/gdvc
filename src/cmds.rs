@@ -128,10 +128,10 @@ pub fn commit(message: &String) -> Result<(), String> {
 }
 
 pub fn log() -> Result<(), String> {
-    //let mut ws = WsClient::connect()?;
+    let mut ws = WsClient::connect()?;
 
-    //let string = ws.get_level_string()?;
-    let marker = 1777940517; //level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+    let string = ws.get_level_string()?;
+    let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
 
     let path = get_level_path(marker).join("commits");
     let files = fs::read_dir(path)
@@ -213,7 +213,7 @@ pub fn log() -> Result<(), String> {
         }
     }
 
-    //let _ = ws.disconnect();
+    let _ = ws.disconnect();
     let _ = terminal::disable_raw_mode();
     Ok(())
 }
