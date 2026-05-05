@@ -80,7 +80,7 @@ fn main() {
             actions::init::run()
         },
         Commands::Commit { message } => {
-            cmds::commit(&message)
+            actions::commit::run(&message)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
