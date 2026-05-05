@@ -85,9 +85,9 @@ pub fn decode_string(string: &String) -> Result<String, String> {
 
 #[derive(Debug, Clone)]
 pub struct Commit {
-    hash: String,
-    timestamp: u32,
-    message: String
+    pub hash: String,
+    pub timestamp: u32,
+    pub message: String
 }
 
 pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {

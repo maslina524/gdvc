@@ -1,14 +1,16 @@
 use std::time::SystemTime;
 use std::fs::{File, self};
-use std::io::{Write, stdin, stdout};
+use crossterm::{cursor, ExecutableCommand, terminal};
+use std::io::{Read, Write, stdin, stdout};
 
+use chrono::{DateTime, FixedOffset};
 use sha2::{Sha256, Digest};
 use hex;
 
 use crate::ws::WsClient;
 use crate::level::{self, get_marker, set_marker};
-use crate::files;
-use crate::consts::{YELLOW_COLOR, ESC_COLOR};
+use crate::files::{self, get_level_path};
+use crate::consts::{BLUE_COLOR, ESC_COLOR, YELLOW_COLOR};
 
 pub fn help() {
     println!("usage: gdvc [-v | --version] [-p | --path]");
@@ -121,6 +123,97 @@ pub fn commit(message: &String) -> Result<(), String> {
         .map_err(|e| format!("Failed to create commit file: {}", e))?;
 
     let _ = file.write_all(&file_data.as_bytes());
+    
+    Ok(())
+}
 
+pub fn log() -> Result<(), String> {
+    //let mut ws = WsClient::connect()?;
+
+    //let string = ws.get_level_string()?;
+    let marker = 1777940517; //level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+
+    let path = get_level_path(marker).join("commits");
+    let files = fs::read_dir(path)
+        .map_err(|e| format!("Failed to get commits: {e}"))?;
+
+    let mut commits = vec![];
+    for file in files {
+        let file = file.unwrap().path();
+        let cur_commit = level::read_commit_meta(file)
+            .map_err(|e| format!("Failed to get commit meta: {e}"))?;
+        commits.push(cur_commit);
+    }
+    
+    level::sort_commits(&mut commits);
+    commits.reverse();
+
+    let mut lines = vec![];
+    let mut is_head = true;
+    for commit in commits {
+        let mut head_string = format!(
+            "{}commit {}{}",
+            YELLOW_COLOR, commit.hash, ESC_COLOR
+        );
+        if is_head {
+            head_string.push_str(&format!(
+                "{} <- {}HEAD{}",
+                YELLOW_COLOR, BLUE_COLOR, ESC_COLOR
+            ));
+        }
+        lines.push(head_string);
+
+        let dt = DateTime::from_timestamp(commit.timestamp as i64, 0)
+            .expect("Invalid timestamp")
+            .with_timezone(&FixedOffset::east_opt(3 * 3600).unwrap());
+        
+        let timestamp_str = dt.format("%a %b %e %H:%M:%S %Y %z").to_string();
+        lines.push(format!("Date: {timestamp_str}"));
+        lines.push(String::new());
+        lines.push(format!("    {}", commit.message));
+        lines.push(String::new());
+
+        is_head = false;
+    }
+
+    if lines.len() <= 14 {
+        for l in lines {
+            println!("{l}");
+        }
+    } else {
+        let mut i = 0;
+        println!("{}", lines[i]);
+        while i != lines.len() - 1 {
+            print!(": ");
+
+            let mut stdout = stdout();
+    
+            let _ = terminal::enable_raw_mode();
+            
+            let _ = stdout.flush();
+            
+            let mut buffer = [0; 1];
+            let _ = std::io::stdin().read_exact(&mut buffer);
+            let symb = buffer[0] as char;
+            
+            let _ = stdout.execute(cursor::MoveLeft(1));
+            let _ = stdout.execute(terminal::Clear(terminal::ClearType::UntilNewLine));
+
+            let _ = stdout.flush();
+            
+            let _ = terminal::disable_raw_mode();
+
+            if symb == 'q' {
+                let _ = terminal::disable_raw_mode();
+                return Ok(());
+            }
+            i += 1;
+            print!("\r\x1B[2K");
+            println!("{}", lines[i]);
+        }
+    }
+
+    //let _ = ws.disconnect();
+    let _ = terminal::disable_raw_mode();
     Ok(())
 }
