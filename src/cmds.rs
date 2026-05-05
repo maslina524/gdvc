@@ -3,7 +3,6 @@ use std::fs::{File, self};
 use crossterm::{cursor, ExecutableCommand, terminal};
 use std::io::{Read, Write, stdin, stdout};
 
-use chrono::{DateTime, FixedOffset};
 use sha2::{Sha256, Digest};
 use hex;
 
@@ -156,42 +155,15 @@ pub fn log(oneline: bool) -> Result<(), String> {
     let mut is_head = true;
     for commit in commits {
         if oneline {
-            if is_head {
-                lines.push(format!(
-                    "{}{} <- ({}HEAD{}){} {}",
-                    YELLOW_COLOR, &commit.hash[..7], BLUE_COLOR, YELLOW_COLOR, ESC_COLOR, commit.message
-                ));
-                is_head = false;
-                continue;
-            }
-            lines.push(format!(
-                "{}{}{} {}",
-                YELLOW_COLOR, &commit.hash[..7], ESC_COLOR, commit.message
-            ));
-            continue;
+            lines.push(commit.format_oneline(is_head));
+        } else {
+            let mut commit_lines: Vec<String> = commit
+                .format_multiline(is_head)
+                .split('\n')
+                .map(|s| s.to_string())
+                .collect();
+            lines.append(&mut commit_lines);
         }
-        let mut head_string = format!(
-            "{}commit {}{}",
-            YELLOW_COLOR, commit.hash, ESC_COLOR
-        );
-        if is_head {
-            head_string.push_str(&format!(
-                "{} <- {}HEAD{}",
-                YELLOW_COLOR, BLUE_COLOR, ESC_COLOR
-            ));
-        }
-        lines.push(head_string);
-
-        let dt = DateTime::from_timestamp(commit.timestamp as i64, 0)
-            .expect("Invalid timestamp")
-            .with_timezone(&FixedOffset::east_opt(3 * 3600).unwrap());
-        
-        let timestamp_str = dt.format("%a %b %e %H:%M:%S %Y %z").to_string();
-        lines.push(format!("Date: {timestamp_str}"));
-        lines.push(String::new());
-        lines.push(format!("    {}", commit.message));
-        lines.push(String::new());
-
         is_head = false;
     }
 
