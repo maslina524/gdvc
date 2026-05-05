@@ -9,18 +9,21 @@ use hex;
 use crate::ws::WsClient;
 use crate::level::{self, get_marker, set_marker};
 use crate::files::{self, get_level_path};
-use crate::consts::{BLUE_COLOR, ESC_COLOR, YELLOW_COLOR};
+use crate::consts::{ESC_COLOR, YELLOW_COLOR};
 
 pub fn help() {
     println!("usage: gdvc [-v | --version] [-p | --path]");
     println!("            <command> [<args>]");
 
     println!("\nstart a working area");
-    println!("    init        Initialize your level for gdvc");
-    println!("    destroy     Remove all gdvc tracking");
+    println!("    init        Initialize your level for Gdvc");
+    println!("    destroy     Remove all Gdvc tracking");
+
+    println!("\nexamine the history and state");
+    println!("    log         Show commit logs");
 
     println!("\nwork on the current");
-    println!("    commit      Record changes to the level");
+    println!("    commit      Record the changes");
 }
 
 pub fn init() -> Result<(), String> {
