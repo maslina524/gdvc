@@ -11,4 +11,5 @@ pub fn run() {
 
     println!("\nwork on the current");
     println!("    commit      Record the changes");
+    println!("    rollback    Restore the level to a previous commit");
 }
