@@ -5,6 +5,7 @@ use std::io::Write;
 use sha2::{Sha256, Digest};
 use hex;
 
+use crate::files::get_level_path;
 use crate::ws::WsClient;
 use crate::level;
 use crate::files;
@@ -34,11 +35,17 @@ pub fn run(message: &String) -> Result<(), String> {
     let hash = Sha256::digest(&file_data);
     let hex_hash = hex::encode(hash);
 
-    let commit_path = files::get_level_path(marker).join("commits").join(hex_hash);
+    let commit_path = files::get_level_path(marker).join("commits").join(&hex_hash);
     let mut file = File::create(commit_path)
         .map_err(|e| format!("Failed to create commit file: {}", e))?;
 
     let _ = file.write_all(&file_data.as_bytes());
+
+    // HEAD file
+    let head_path = get_level_path(marker).join("HEAD");
+    let mut file = File::create(head_path)
+        .map_err(|e| format!("Failed to create the HEAD file: {e}"))?;
+    let _ = file.write_all(hex_hash.as_bytes());
     
     Ok(())
 }
