@@ -1,7 +1,5 @@
 use std::fs;
 
-use hex::FromHex;
-
 use crate::ws::WsClient;
 use crate::level::{self, Commit, decode_string};
 use crate::files::{self, get_level_path};
