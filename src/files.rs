@@ -1,5 +1,6 @@
+use std::io::Write;
 use std::path::PathBuf;
-use std::fs;
+use std::fs::{self, File};
 
 use dirs::data_local_dir;
 
@@ -19,6 +20,15 @@ pub fn create_level_folder(marker: u32) -> Result<(), String> {
 
     fs::create_dir_all(&path.join("commits"))
         .map_err(|e| format!("Failed to create commits directory: {}", e))?;
+
+    Ok(())
+}
+
+pub fn create_head_file(marker: u32, hash: &String) -> Result<(), String> {
+    let head_path = get_level_path(marker).join("HEAD");
+    let mut file = File::create(head_path)
+        .map_err(|e| format!("Failed to create the HEAD file: {e}"))?;
+    let _ = file.write_all(hash.as_bytes());
 
     Ok(())
 }
