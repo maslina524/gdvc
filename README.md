@@ -1,4 +1,4 @@
-![gdvc banner](logo.png)
+<img src="logo.png" alt="gdvc banner" width="500" height="175">
 
 # Geometry Dash Version Control
 
