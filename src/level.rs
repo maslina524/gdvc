@@ -196,7 +196,7 @@ pub fn read_commit_string(path: PathBuf) -> io::Result<String> {
     Ok(String::new())
 }
 
-pub fn sort_commits(commits: &mut Vec<Commit>) {
+pub fn sort_commits(commits: &mut [Commit]) {
     // INSERTION SORT BY TIMESTAMP
     for i in 1..commits.len() {
         let key = commits[i].clone();
