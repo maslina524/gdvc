@@ -3,7 +3,6 @@ use clap::{Parser, Subcommand};
 
 use crate::consts::VERSION;
 
-mod cmds;
 mod ws;
 mod level;
 mod consts;
@@ -46,6 +45,11 @@ enum Commands {
         message: String,
     },
 
+    Rollback {
+        #[arg(required = false)]
+        target: String,
+    },
+
     Log {
         #[arg(long = "oneline", required = false)]
         oneline: bool,
@@ -81,6 +85,9 @@ fn main() {
         },
         Commands::Commit { message } => {
             actions::commit::run(&message)
+        },
+        Commands::Rollback { target } => {
+            actions::rollback::run(target)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
