@@ -178,6 +178,24 @@ pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {
     )
 }
 
+pub fn read_commit_string(path: PathBuf) -> io::Result<String> {
+    let file = File::open(&path)?;
+    let reader = BufReader::new(file);
+    let mut prev_line_is_empty = false;
+
+    for line in reader.lines() {
+        let line = line?;
+        if prev_line_is_empty {
+            return Ok(line)
+        }
+        if line.is_empty() {
+            prev_line_is_empty = true;
+        }
+    }
+
+    Ok(String::new())
+}
+
 pub fn sort_commits(commits: &mut Vec<Commit>) {
     // INSERTION SORT BY TIMESTAMP
     for i in 1..commits.len() {
