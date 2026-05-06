@@ -57,6 +57,9 @@ enum Commands {
     },
 
     Marker {
+        #[arg(short = 's', long = "set", required = false)]
+        marker: Option<u32>,
+
         #[arg(short, long)]
         clean: bool
     },
@@ -100,8 +103,8 @@ fn main() {
         Commands::Rollback { target, _soft, hard } => {
             actions::rollback::run(target, hard)
         },
-        Commands::Marker { clean } => {
-            actions::marker::run(clean)
+        Commands::Marker { clean, marker } => {
+            actions::marker::run(clean, marker)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
