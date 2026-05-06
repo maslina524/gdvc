@@ -56,6 +56,11 @@ enum Commands {
         target: String,
     },
 
+    Marker {
+        #[arg(short, long)]
+        clean: bool
+    },
+
     Log {
         #[arg(long = "oneline", required = false)]
         oneline: bool,
@@ -94,6 +99,9 @@ fn main() {
         },
         Commands::Rollback { target, _soft, hard } => {
             actions::rollback::run(target, hard)
+        },
+        Commands::Marker { clean } => {
+            actions::marker::run(clean)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
