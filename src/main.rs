@@ -46,6 +46,12 @@ enum Commands {
     },
 
     Rollback {
+        #[arg(long, conflicts_with = "hard")]
+        _soft: bool,
+        
+        #[arg(long, conflicts_with = "_soft")]
+        hard: bool,
+
         #[arg(required = false)]
         target: String,
     },
@@ -86,8 +92,8 @@ fn main() {
         Commands::Commit { message } => {
             actions::commit::run(&message)
         },
-        Commands::Rollback { target } => {
-            actions::rollback::run(target)
+        Commands::Rollback { target, _soft, hard } => {
+            actions::rollback::run(target, hard)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
