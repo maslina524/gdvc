@@ -4,7 +4,7 @@ use crate::ws::WsClient;
 use crate::level::{self, Commit, decode_string};
 use crate::files::{self, get_level_path};
 
-pub fn run(target: String) -> Result<(), String> {
+pub fn run(target: String, hard: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
@@ -27,13 +27,17 @@ pub fn run(target: String) -> Result<(), String> {
     let target_commit = get_target_commit(&mut commits, &target, &head_hash)?;
     files::create_head_file(marker, &target_commit.hash)?;
 
-    let path = get_level_path(marker).join("commits").join(&target_commit.hash);
-    let encoded_string = level::read_commit_string(path)
-        .map_err(|e| format!("Io error: {e}"))?;
+    if hard {
+        let path = get_level_path(marker).join("commits").join(&target_commit.hash);
+        let encoded_string = level::read_commit_string(path)
+            .map_err(|e| format!("Io error: {e}"))?;
 
-    let level_string = decode_string(&encoded_string)?;
-    ws.replace_level_string(&level_string)
-        .map_err(|e| format!("Failed to update level: {e}"))?;
+        let level_string = decode_string(&encoded_string)?;
+        ws.replace_level_string(&level_string)
+            .map_err(|e| format!("Failed to update level: {e}"))?;
+    }
+
+    let _ = ws.disconnect();
     
     Ok(())
 }
