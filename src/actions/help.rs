@@ -5,6 +5,7 @@ pub fn run() {
     println!("\nstart a working area");
     println!("    init        Initialize your level for Gdvc");
     println!("    destroy     Remove all Gdvc tracking");
+    println!("    marker      Prints and replaces the Gdvc level marker");
 
     println!("\nexamine the history and state");
     println!("    log         Show commit logs");
