@@ -2,17 +2,19 @@ use std::io::{Write, stdin, stdout};
 
 use crate::consts::{ESC, INVERT, LINES_THRESHOLD};
 
-pub fn print_by_line(text: String) -> Result<(), String> {
-    let lines_count = text.matches('\n').count() + 1;
-    if lines_count <= LINES_THRESHOLD {
-        println!("{text}");
-        return Ok(())
-    }
-
+pub fn print_by_line_str(text: String) -> Result<(), String> {
     let lines: Vec<String> = text
-        .split('\n')
+        .split("\n")
         .map(|s| s.to_string())
         .collect();
+    print_by_line(lines)
+}
+
+pub fn print_by_line(lines: Vec<String>) -> Result<(), String> {
+    if lines.len() <= LINES_THRESHOLD {
+        println!("{}", lines.join("\n"));
+        return Ok(())
+    }
 
     for i in 0..LINES_THRESHOLD {
         println!("{}", lines[i])
@@ -58,7 +60,7 @@ mod tests {
 
     #[test]
     fn unit_test_1() {
-        let text = vec![
+        let lines = vec![
             "Say you'll be mine, we'll be divine",
             "My paws were made for you",
             "My claws, I'll see what they can do",
@@ -80,8 +82,8 @@ mod tests {
             "You run, but you don't mean it, you're afraid I'll be too good",
             "In all the love you've had, you've never had it like you should",
             "Ha-ha-ha-ha-ha-ha-ha",
-        ].join("\n");
+        ].iter().map(|s| s.to_string()).collect();
 
-        let _ = print_by_line(text);
+        let _ = print_by_line(lines);
     }
 }
