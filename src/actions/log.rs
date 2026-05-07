@@ -1,6 +1,6 @@
 use std::fs;
-use crossterm::{cursor, ExecutableCommand, terminal};
-use std::io::{Read, Write, stdout};
+
+use crate::terminal::print_by_line;
 
 use crate::ws::WsClient;
 use crate::level;
@@ -46,45 +46,9 @@ pub fn run(oneline: bool) -> Result<(), String> {
         }
         is_head = false;
     }
-
-    if lines.len() <= 14 {
-        for l in lines {
-            println!("{l}");
-        }
-    } else {
-        let mut i = 0;
-        println!("{}", lines[i]);
-        while i != lines.len() - 1 {
-            print!(": ");
-
-            let mut stdout = stdout();
-    
-            let _ = terminal::enable_raw_mode();
-            
-            let _ = stdout.flush();
-            
-            let mut buffer = [0; 1];
-            let _ = std::io::stdin().read_exact(&mut buffer);
-            let symb = buffer[0] as char;
-            
-            let _ = stdout.execute(cursor::MoveLeft(1));
-            let _ = stdout.execute(terminal::Clear(terminal::ClearType::UntilNewLine));
-
-            let _ = stdout.flush();
-            
-            let _ = terminal::disable_raw_mode();
-
-            if symb == 'q' {
-                let _ = terminal::disable_raw_mode();
-                return Ok(());
-            }
-            i += 1;
-            print!("\r\x1B[2K");
-            println!("{}", lines[i]);
-        }
-    }
+    print_by_line(&lines)?;
 
     let _ = ws.disconnect();
-    let _ = terminal::disable_raw_mode();
+
     Ok(())
 }
