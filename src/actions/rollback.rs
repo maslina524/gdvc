@@ -1,7 +1,8 @@
 use std::fs;
 
+use crate::actions::commit::{Commit, read_commit_meta, read_commit_string, sort_commits};
 use crate::ws::WsClient;
-use crate::level::{self, Commit, decode_string};
+use crate::level::{self, decode_string};
 use crate::files::{self, get_level_path};
 
 pub fn run(target: String, hard: bool) -> Result<(), String> {
@@ -17,7 +18,7 @@ pub fn run(target: String, hard: bool) -> Result<(), String> {
     let mut commits = vec![];
     for file in files {
         let file = file.unwrap().path();
-        let cur_commit = level::read_commit_meta(file)
+        let cur_commit = read_commit_meta(file)
             .map_err(|e| format!("Failed to get commit meta: {e}"))?;
         commits.push(cur_commit);
     }
@@ -29,7 +30,7 @@ pub fn run(target: String, hard: bool) -> Result<(), String> {
 
     if hard {
         let path = get_level_path(marker).join("commits").join(&target_commit.hash);
-        let encoded_string = level::read_commit_string(path)
+        let encoded_string = read_commit_string(path)
             .map_err(|e| format!("Io error: {e}"))?;
 
         let level_string = decode_string(&encoded_string)?;
@@ -43,7 +44,7 @@ pub fn run(target: String, hard: bool) -> Result<(), String> {
 }
 
 fn get_target_commit<'a>(mut commits: &'a mut [Commit], target: &String, head_hash: &String) -> Result<&'a Commit, String> {
-    level::sort_commits(&mut commits);
+    sort_commits(&mut commits);
     commits.reverse();
 
     // HEAD~N && HEAD
