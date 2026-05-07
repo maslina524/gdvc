@@ -4,7 +4,7 @@ use std::io::{Write, stdin, stdout};
 use crate::ws::WsClient;
 use crate::level::{get_marker, set_marker};
 use crate::files;
-use crate::consts::{ESC_COLOR, YELLOW_COLOR};
+use crate::consts::{ESC, YELLOW};
 
 pub fn run(force: bool, hard: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
@@ -26,7 +26,7 @@ pub fn run(force: bool, hard: bool) -> Result<(), String> {
             println!("    All commits will be lost forever.\n");
         }
 
-        println!("Type {}YES{} to confirm:", YELLOW_COLOR, ESC_COLOR);
+        println!("Type {}YES{} to confirm:", YELLOW, ESC);
         let mut input = String::new();
         let _ = stdout().flush();
         stdin().read_line(&mut input).map_err(|_| "Did not enter a correct string")?;

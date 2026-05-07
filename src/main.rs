@@ -8,6 +8,7 @@ mod level;
 mod consts;
 mod files;
 mod actions;
+mod terminal;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]

@@ -6,7 +6,7 @@ use chrono::{DateTime, FixedOffset};
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
 
-use crate::consts::{SECRET_KEY, YELLOW_COLOR, BLUE_COLOR, ESC_COLOR};
+use crate::consts::{SECRET_KEY, YELLOW, BLUE, ESC};
 
 pub fn get_marker(string: &str) -> Option<u32> {
     let semicolon_pos = string.find(';')?;
@@ -97,13 +97,13 @@ impl Commit {
 
         ret.push_str(&format!(
             "{}commit {}{}",
-            YELLOW_COLOR, self.hash, ESC_COLOR
+            YELLOW, self.hash, ESC
         ));
 
         if is_head {
             ret.push_str(&format!(
                 "{} <- {}HEAD{}",
-                YELLOW_COLOR, BLUE_COLOR, ESC_COLOR
+                YELLOW, BLUE, ESC
             ));
         }
         ret.push('\n');
@@ -126,12 +126,12 @@ impl Commit {
         if is_head {
             ret = format!(
                 "{}{} <- ({}HEAD{}){} {}",
-                YELLOW_COLOR, &self.hash[..7], BLUE_COLOR, YELLOW_COLOR, ESC_COLOR, self.message
+                YELLOW, &self.hash[..7], BLUE, YELLOW, ESC, self.message
             );
         } else {
             ret = format!(
                 "{}{}{} {}",
-                YELLOW_COLOR, &self.hash[..7], ESC_COLOR, self.message
+                YELLOW, &self.hash[..7], ESC, self.message
             );
         }
         ret
