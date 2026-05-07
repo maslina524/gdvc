@@ -1,6 +1,6 @@
 use crate::ws::WsClient;
 use crate::level;
-use crate::consts::{YELLOW_COLOR, ESC_COLOR};
+use crate::consts::{YELLOW, ESC};
 
 pub fn run(clean: bool, marker: Option<u32>) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
@@ -23,7 +23,7 @@ pub fn run(clean: bool, marker: Option<u32>) -> Result<(), String> {
     if clean {
         println!("{marker}");
     } else {
-        println!("Marker of the current level: {YELLOW_COLOR}{marker}{ESC_COLOR}");
+        println!("Marker of the current level: {YELLOW}{marker}{ESC}");
     }
     
     Ok(())
