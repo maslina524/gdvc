@@ -1,5 +1,6 @@
 use std::fs;
 
+use crate::actions::commit::{read_commit_meta, sort_commits};
 use crate::terminal::print_by_line;
 
 use crate::ws::WsClient;
@@ -19,7 +20,7 @@ pub fn run(oneline: bool) -> Result<(), String> {
     let mut commits = vec![];
     for file in files {
         let file = file.unwrap().path();
-        let cur_commit = level::read_commit_meta(file)
+        let cur_commit = read_commit_meta(file)
             .map_err(|e| format!("Failed to get commit meta: {e}"))?;
         commits.push(cur_commit);
     }
@@ -28,7 +29,7 @@ pub fn run(oneline: bool) -> Result<(), String> {
         return Ok(())
     }
     
-    level::sort_commits(&mut commits);
+    sort_commits(&mut commits);
     commits.reverse();
 
     let mut lines = vec![];
