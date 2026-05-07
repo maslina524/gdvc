@@ -2,15 +2,15 @@ use std::io::{Write, stdin, stdout};
 
 use crate::consts::{ESC, INVERT, LINES_THRESHOLD};
 
-pub fn print_by_line_str(text: String) -> Result<(), String> {
+pub fn print_by_line_str(text: &String) -> Result<(), String> {
     let lines: Vec<String> = text
         .split("\n")
         .map(|s| s.to_string())
         .collect();
-    print_by_line(lines)
+    print_by_line(&lines)
 }
 
-pub fn print_by_line(lines: Vec<String>) -> Result<(), String> {
+pub fn print_by_line(lines: &Vec<String>) -> Result<(), String> {
     if lines.len() <= LINES_THRESHOLD {
         println!("{}", lines.join("\n"));
         return Ok(())
@@ -84,6 +84,6 @@ mod tests {
             "Ha-ha-ha-ha-ha-ha-ha",
         ].iter().map(|s| s.to_string()).collect();
 
-        let _ = print_by_line(lines);
+        let _ = print_by_line(&lines);
     }
 }
