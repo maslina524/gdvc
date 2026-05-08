@@ -70,6 +70,8 @@ enum Commands {
         oneline: bool,
     },
 
+    Status {  },
+
     Help,
 
     #[command(external_subcommand)]
@@ -112,6 +114,9 @@ fn main() {
         },
         Commands::Log { oneline } => {
             actions::log::run(oneline)
+        },
+        Commands::Status {  } => {
+            actions::status::run()
         },
         Commands::Help => {
             actions::help::run();
