@@ -1,4 +1,6 @@
-<img src="logo.png" alt="gdvc banner" width="500" height="175">
+<img src="logo.png" alt="gdvc banner" width="250" height="88">
+
+---
 
 # Geometry Dash Version Control
 
@@ -41,7 +43,7 @@ gdvc rollback HEAD~1
 ## Todo List
 
 - [ ] Restoring the gdvc signature in the level
-    - [ ] by timestamp (manual recovery)
+    - [x] by timestamp (manual recovery)
     - [ ] by .gmd file
 - [ ] Auto detection of WS port
     - [ ] Windows
