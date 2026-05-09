@@ -4,5 +4,5 @@ pub mod destroy;
 pub mod commit;
 pub mod log;
 pub mod rollback;
-pub mod marker;
+pub mod restore;
 pub mod status;
