@@ -1,4 +1,12 @@
 pub const SECRET_KEY: &str = "kA26";
+pub const GD_PLIST_TAGS_FORMAT: [[&str; 2]; 6] = [
+    ["k", "key"],
+    ["s", "string"],
+    ["d", "dict"],
+    ["i", "integer"],
+    ["r", "real"],
+    ["t", "string"],
+];
 
 pub const YELLOW: &str = "\x1b[0;33m";
 pub const BLUE: &str = "\x1b[1;36m";
