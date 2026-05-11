@@ -33,8 +33,11 @@ pub fn run(oneline: bool) -> Result<(), String> {
     commits.reverse();
 
     let mut lines = vec![];
-    let mut is_head = true;
+    let head_path = get_level_path(marker).join("HEAD");
+    let head_hash = fs::read_to_string(&head_path)
+        .map_err(|e| format!("Failed to read the HEAD file: {e}"))?;
     for commit in commits {
+        let is_head = commit.hash == head_hash;
         if oneline {
             lines.push(commit.format_oneline(is_head));
         } else {
@@ -45,7 +48,6 @@ pub fn run(oneline: bool) -> Result<(), String> {
                 .collect();
             lines.append(&mut commit_lines);
         }
-        is_head = false;
     }
     print_by_line(&lines)?;
 
