@@ -3,6 +3,16 @@ use std::path::PathBuf;
 use std::fs::{self, File};
 
 use dirs::data_local_dir;
+use serde_json::Value;
+
+pub fn get_mod_settings(mod_id: &String) -> Option<Value> {
+    let path = data_local_dir().unwrap()
+        .join("GeometryDash").join("geode").join("mods").join(mod_id).join("settings.json");
+
+    let data_str = fs::read_to_string(path).ok()?;
+    let json = serde_json::from_str(&data_str).ok();
+    json
+}
 
 pub fn get_gdvc_path() -> PathBuf {
     data_local_dir().unwrap().join(".gdvc")
