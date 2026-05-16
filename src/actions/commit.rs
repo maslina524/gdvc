@@ -1,6 +1,4 @@
-use std::io;
-use std::io::BufRead;
-use std::io::BufReader;
+use std::fs;
 use std::path::PathBuf;
 use std::time::SystemTime;
 use std::fs::File;
@@ -20,7 +18,8 @@ use crate::files;
 pub struct Commit {
     pub hash: String,
     pub timestamp: u32,
-    pub message: String
+    pub message: String,
+    pub string: String
 }
 
 impl Commit {
@@ -70,62 +69,40 @@ impl Commit {
     }
 }
 
-pub fn read_commit_meta(path: PathBuf) -> io::Result<Commit> {
-    // Reading meta-data from file
-    let file = File::open(&path)?;
-    let reader = BufReader::new(file);
-    let mut lines = vec![];
+pub fn read_commit(path: &PathBuf) -> Result<Commit, String> {
+    let data = fs::read_to_string(path)
+        .map_err(|e| format!("Failed to read the commit file: {e}"))?;
 
-    for line in reader.lines() {
-        let line = line?;
-        if line.is_empty() {
-            break;
-        }
-        lines.push(line);
-    }
-    
-    // Generate Commit struct
+    let parts: Vec<&str> = data.split("\n\n").collect();
+    let (meta, string) = (parts[0], parts[1].to_string());
+
+    let lines_meta: Vec<&str> = meta.lines().collect();
+
     let hash = path
         .file_name()
         .and_then(|n| n.to_str())
         .unwrap_or("no hash")
         .to_string();
 
-    let timestamp = lines
+    let timestamp = lines_meta
         .get(0)
         .and_then(|t| t.parse::<u32>().ok())
         .unwrap_or(0);
 
-    let message = lines
+    let message = lines_meta
         .get(1)
         .cloned()
+        .map(|s| s.to_string())
         .unwrap_or(String::new());
 
     Ok(
         Commit {
             hash: hash,
             timestamp: timestamp,
-            message: message
+            message: message,
+            string: string
         }
     )
-}
-
-pub fn read_commit_string(path: PathBuf) -> io::Result<String> {
-    let file = File::open(&path)?;
-    let reader = BufReader::new(file);
-    let mut prev_line_is_empty = false;
-
-    for line in reader.lines() {
-        let line = line?;
-        if prev_line_is_empty {
-            return Ok(line)
-        }
-        if line.is_empty() {
-            prev_line_is_empty = true;
-        }
-    }
-
-    Ok(String::new())
 }
 
 pub fn sort_commits(commits: &mut [Commit]) {
@@ -176,4 +153,18 @@ pub fn run(message: &String) -> Result<(), String> {
     files::create_head_file(marker, &hex_hash)?;
     
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{actions::commit::read_commit, files::get_level_path};
+
+    #[test]
+    fn read_commit_test() {
+        let commit_hash = "2f789befcea09a9304708e87f246277c99e3d19d7c9072d5afa1e892ac83a5b7";
+        let path = get_level_path(1778784712).join("commits").join(commit_hash);
+
+        let commit_data = read_commit(&path);
+        println!("{commit_data:#?}")
+    }
 }
