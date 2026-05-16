@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::actions::commit::{read_commit_meta, sort_commits};
+use crate::actions::commit::{read_commit, sort_commits};
 use crate::terminal::print_by_line;
 
 use crate::ws::WsClient;
@@ -20,8 +20,7 @@ pub fn run(oneline: bool) -> Result<(), String> {
     let mut commits = vec![];
     for file in files {
         let file = file.unwrap().path();
-        let cur_commit = read_commit_meta(file)
-            .map_err(|e| format!("Failed to get commit meta: {e}"))?;
+        let cur_commit = read_commit(&file)?;
         commits.push(cur_commit);
     }
 

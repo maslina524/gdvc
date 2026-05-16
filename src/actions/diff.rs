@@ -3,7 +3,7 @@ use std::fs;
 
 use crate::files::get_level_path;
 use crate::level::{self, decode_string, get_marker};
-use crate::actions::commit::read_commit_string;
+use crate::actions::commit::read_commit;
 
 use crate::ws::WsClient;
 use crate::consts::{BOLD, ESC};
@@ -21,8 +21,7 @@ pub fn run() -> Result<(), String> {
         .map_err(|e| format!("Failed to read the HEAD file: {e}"))?;
     let path = get_level_path(marker).join("commits").join(&head_hash);
 
-    let head_string = read_commit_string(path)
-        .map_err(|e| format!("Failed to read the HEAD commit string: {e}"))?;
+    let head_string = read_commit(&path)?.string;
     let decoded_string = decode_string(&head_string)?;
 
     let old_sep = decoded_string.find(";").unwrap();

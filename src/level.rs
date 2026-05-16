@@ -93,7 +93,7 @@ pub fn decode_string(string: &String) -> Result<String, String> {
 mod tests {
     use std::fs;
 
-    use crate::{actions::commit::read_commit_meta, files::get_level_path, level::{decode_string, encode_string}};
+    use crate::{actions::commit::read_commit, files::get_level_path, level::{decode_string, encode_string}};
 
     #[test]
     fn encode_string_test() {
@@ -117,7 +117,7 @@ mod tests {
         let path = get_level_path(1777940517).join("commits");
         let files = fs::read_dir(path).unwrap();
         for file in files {
-            println!("{:?}", read_commit_meta(file.unwrap().path()).unwrap());
+            println!("{:?}", read_commit(&file.unwrap().path()).unwrap());
         }
     }
 }
