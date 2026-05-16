@@ -45,9 +45,9 @@ gdvc rollback HEAD~1
 - [x] Restoring the gdvc signature in the level
     - [x] by timestamp (manual recovery)
     - [x] by .gmd file
-- [ ] Auto detection of WS port
-    - [ ] Windows
-    - [ ] MacOS
+- [x] Auto detection of WS port
+    - [x] Windows
+    - [x] MacOS
 - [ ] Branches
 - [x] Log: commit history
 - [ ] Python file for quick install
