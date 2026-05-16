@@ -5,7 +5,7 @@ use std::fs::{self, File};
 use dirs::data_local_dir;
 use serde_json::Value;
 
-pub fn get_mod_settings(mod_id: &String) -> Option<Value> {
+pub fn get_mod_settings(mod_id: &str) -> Option<Value> {
     let path = data_local_dir().unwrap()
         .join("GeometryDash").join("geode").join("mods").join(mod_id).join("settings.json");
 
