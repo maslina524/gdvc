@@ -158,9 +158,8 @@ pub fn run(message: &String) -> Result<(), String> {
         .as_secs() as u32;
 
     let encoded_string = level::encode_string(&string)?;
-
-    let hash = Sha256::digest(&message);
-    let hex_hash = hex::encode(hash);
+    
+    let hex_hash = level::get_string_hash(&string);
 
     let commit_path = files::get_level_path(marker).join("commits").join(&hex_hash);
     let mut file = File::create(commit_path)
