@@ -1,4 +1,5 @@
 pub const SECRET_KEY: &str = "kA26";
+pub const LIVE_EDITOR_MOD_ID: &str = "iandyhd3.wsliveeditor";
 pub const GD_PLIST_TAGS_FORMAT: [[&str; 2]; 6] = [
     ["k", "key"],
     ["s", "string"],
