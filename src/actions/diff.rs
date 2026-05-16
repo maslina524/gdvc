@@ -1,6 +1,5 @@
 use std::collections::HashSet;
 use std::fs;
-use std::slice::ChunkBy;
 
 use crate::files::get_level_path;
 use crate::level::{self, decode_string, get_marker};
@@ -51,7 +50,7 @@ fn compare_strings(new_string: &String, old_string: &String) -> Result<(usize, u
     // NEW STRING
     let new_objects: Vec<&str> = new_string
         .split(";")
-        .filter(|s| !s.is_empty()) // игнорируем пустые строки
+        .filter(|s| !s.is_empty()) 
         .collect();
 
     // OLD STRING
