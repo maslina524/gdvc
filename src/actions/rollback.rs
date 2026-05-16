@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::actions::commit::{Commit, read_commit_meta, read_commit_string, sort_commits};
+use crate::actions::commit::{Commit, read_commit, sort_commits};
 use crate::ws::WsClient;
 use crate::level::{self, decode_string};
 use crate::files::{self, get_level_path};
@@ -18,8 +18,7 @@ pub fn run(target: String, soft: bool) -> Result<(), String> {
     let mut commits = vec![];
     for file in files {
         let file = file.unwrap().path();
-        let cur_commit = read_commit_meta(file)
-            .map_err(|e| format!("Failed to get commit meta: {e}"))?;
+        let cur_commit = read_commit(&file)?;
         commits.push(cur_commit);
     }
 
@@ -30,8 +29,7 @@ pub fn run(target: String, soft: bool) -> Result<(), String> {
 
     if !soft {
         let path = get_level_path(marker).join("commits").join(&target_commit.hash);
-        let encoded_string = read_commit_string(path)
-            .map_err(|e| format!("Io error: {e}"))?;
+        let encoded_string = read_commit(&path)?.string;
 
         let level_string = decode_string(&encoded_string)?;
         ws.replace_level_string(&level_string)
