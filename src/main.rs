@@ -73,7 +73,7 @@ enum Commands {
         oneline: bool,
     },
 
-    Status {  },
+    Diff {  },
 
     Help,
 
@@ -118,8 +118,8 @@ fn main() {
         Commands::Log { oneline } => {
             actions::log::run(oneline)
         },
-        Commands::Status {  } => {
-            actions::status::run()
+        Commands::Diff {  } => {
+            actions::diff::run()
         },
         Commands::Help => {
             actions::help::run();

@@ -5,4 +5,4 @@ pub mod commit;
 pub mod log;
 pub mod rollback;
 pub mod restore;
-pub mod status;
+pub mod diff;
