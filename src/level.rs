@@ -2,8 +2,15 @@ use std::io::{Read, Write};
 
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
+use sha2::{Digest, Sha256};
 
 use crate::consts::{SECRET_KEY};
+
+pub fn get_string_hash(string: &String) -> String {
+    let hash = Sha256::digest(&string);
+    let hex_hash = hex::encode(hash);
+    hex_hash
+}
 
 pub fn get_marker(string: &str) -> Option<u32> {
     let semicolon_pos = string.find(';')?;
