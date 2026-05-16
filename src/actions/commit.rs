@@ -8,8 +8,6 @@ use std::io::Write;
 
 use chrono::DateTime;
 use chrono::FixedOffset;
-use sha2::{Sha256, Digest};
-use hex;
 
 use crate::consts::BLUE;
 use crate::consts::ESC;
