@@ -50,4 +50,4 @@ gdvc rollback HEAD~1
     - [x] MacOS
 - [ ] Branches
 - [x] Log: commit history
-- [ ] Python file for quick install
+- [x] Python file for quick install
