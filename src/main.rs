@@ -58,8 +58,11 @@ enum Commands {
     },
 
     Restore {
-        #[arg(short = 's', long = "set", required = false)]
+        #[arg(short = 's', long = "set", required = false, conflicts_with = "gmd")]
         marker: Option<u32>,
+
+        #[arg(long = "gmd", required = false, conflicts_with = "marker")]
+        gmd: Option<String>,
 
         #[arg(short, long)]
         clean: bool
@@ -106,8 +109,8 @@ fn main() {
         Commands::Rollback { target, _soft, hard } => {
             actions::rollback::run(target, hard)
         },
-        Commands::Restore { clean, marker } => {
-            actions::restore::run(clean, marker)
+        Commands::Restore { clean, marker, gmd } => {
+            actions::restore::run(clean, marker, gmd)
         },
         Commands::Destroy { force, _soft, hard } => {
             actions::destroy::run(force, hard)
