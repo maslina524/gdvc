@@ -159,19 +159,19 @@ pub fn run(message: &String) -> Result<(), String> {
 
     let encoded_string = level::encode_string(&string)?;
 
+    let hash = Sha256::digest(&message);
+    let hex_hash = hex::encode(hash);
+
+    let commit_path = files::get_level_path(marker).join("commits").join(&hex_hash);
+    let mut file = File::create(commit_path)
+        .map_err(|e| format!("Failed to create commit file: {}", e))?;
+
     let file_data = vec![
         timestamp.to_string().as_str(),
         message,
         "",
         &encoded_string
     ].join("\n");
-
-    let hash = Sha256::digest(&file_data);
-    let hex_hash = hex::encode(hash);
-
-    let commit_path = files::get_level_path(marker).join("commits").join(&hex_hash);
-    let mut file = File::create(commit_path)
-        .map_err(|e| format!("Failed to create commit file: {}", e))?;
 
     let _ = file.write_all(&file_data.as_bytes());
 
