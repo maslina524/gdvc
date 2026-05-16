@@ -42,9 +42,9 @@ gdvc rollback HEAD~1
 
 ## Todo List
 
-- [ ] Restoring the gdvc signature in the level
+- [x] Restoring the gdvc signature in the level
     - [x] by timestamp (manual recovery)
-    - [ ] by .gmd file
+    - [x] by .gmd file
 - [ ] Auto detection of WS port
     - [ ] Windows
     - [ ] MacOS
