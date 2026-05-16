@@ -4,13 +4,28 @@ use tungstenite::{Message, Utf8Bytes, WebSocket, connect};
 use tungstenite::stream::MaybeTlsStream;
 use std::net::TcpStream;
 
+use crate::files;
+use crate::consts::LIVE_EDITOR_MOD_ID;
+
+fn read_settings() -> Option<u16> {
+    let json = files::get_mod_settings(LIVE_EDITOR_MOD_ID)?;
+    let dict = json.as_object()?;
+    let port = dict.get("ws-port")?.as_u64()? as u16;
+
+    Some(port)
+}
+
+fn get_port() -> u16 {
+    read_settings().unwrap_or(1313 /* default port */)
+}
+
 pub struct WsClient {
     stream: WebSocket<MaybeTlsStream<TcpStream>>,
 }
 
 impl WsClient {
     pub fn connect() -> Result<Self, String> {
-        let url = "ws://localhost:1313";
+        let url = format!("ws://localhost:{}", get_port());
         if let Ok((stream, _)) = connect(url) {
             return Ok(WsClient { stream })
         } else {
