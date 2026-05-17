@@ -1,4 +1,4 @@
-$install_folder = "$env:APPDATA\gdvc"
+$install_folder = "C:\Program Files\gdvc"
 $install_path = "$install_folder\gdvc.exe"
 
 Write-Host "Download to '$install_folder'" -ForegroundColor Cyan
