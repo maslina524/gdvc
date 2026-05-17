@@ -1,5 +1,6 @@
 $install_folder = "C:\Program Files\gdvc"
 $install_path = "$install_folder\gdvc.exe"
+$repo = "maslina524/gdvc"
 
 Write-Host "Download to '$install_folder'" -ForegroundColor Cyan
 
@@ -9,7 +10,10 @@ if (-not (Test-Path $install_folder)) {
 
 if (-not (Test-Path $install_path)) {
     try {
-        Invoke-WebRequest -Uri "https://github.com/maslina524/gdvc/releases/download/1.0.1/gdvc.exe" -OutFile $install_path
+        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/latest" -Method Get -ErrorAction Stop
+        $download_url = $response.assets[0].browser_download_url
+
+        Invoke-WebRequest -Uri "$download_url" -OutFile $install_path
     }
     catch {
         Write-Host "Download error: $($_.Exception.Message)" -ForegroundColor Red
