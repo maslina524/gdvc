@@ -1,4 +1,4 @@
-<img src="logo.png" alt="gdvc banner" width="250" height="88">
+<img src="logo.png" alt="gdvc banner">
 
 ---
 
