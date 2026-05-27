@@ -1,5 +1,5 @@
+use std::env::current_exe;
 use std::fs;
-use std::path::PathBuf;
 use std::process::Command;
 
 use crate::terminal::print_by_line_str;
@@ -36,8 +36,12 @@ fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
         },
         None => "html"
     };
-    let path_str = format!("./doc/{target}/{cmd}.{target}");
-    let path = PathBuf::from(&path_str);
+    
+    let binding = current_exe().unwrap();
+    let path = binding.parent().unwrap().join("doc").join(target).join(format!("{cmd}.{target}"));
+    let path_str = path.display().to_string();
+
+    println!("{path_str}");
 
     if !path.exists() {
         return Err(format!("fatal: '{path_str}': documentation file not found."));
