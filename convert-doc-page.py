@@ -15,7 +15,7 @@ def re_line_adoc(line: str) -> str:
     ret = re.sub(r'`(.*?)`', rf'__\1__', line, flags=re.DOTALL)
     return ret
 
-def save_to_txt(data: str, path: Path) -> None:
+def save_to_txt(data: str, path: Path, output_name: str) -> None:
     lines = data.split("\n")
     ret = []
     is_code = False
@@ -39,10 +39,10 @@ def save_to_txt(data: str, path: Path) -> None:
                 ret.append(f"{re_line(line)}\n")
     
     output = "".join(ret)
-    with open(f"doc/txt/{path.name[:-3]}.txt", "w") as f:
+    with open(f"doc/txt/{output_name}.txt", "w") as f:
         f.write(output)
 
-def save_to_html(data: str, path: Path) -> None: # use asciidoc
+def save_to_html(data: str, path: Path, output_name: str) -> None: # use asciidoc
     lines = data.split("\n")
     ret = []
     is_code = False
@@ -64,20 +64,25 @@ def save_to_html(data: str, path: Path) -> None: # use asciidoc
                     ret.append(f"{re_line_adoc(line)}\n")
     
     output = "".join(ret)
-    with open(f"doc/adoc/{path.name[:-3]}.adoc", "w") as f:
+    with open(f"doc/adoc/{output_name}.adoc", "w") as f:
         f.write(output)
 
-    subprocess.run(f"asciidoctor -o doc/html/{path.name[:-3]}.html doc/adoc/{path.name[:-3]}.adoc", shell=True)
+    subprocess.run(f"asciidoctor -o doc/html/{output_name}.html doc/adoc/{output_name}.adoc", shell=True)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Input file path expected!")
         sys.exit(1)
 
-    input_file = Path(sys.argv[1])
+    if len(sys.argv) < 3:
+        print("Output file name path expected!")
+        sys.exit(1)
+
+    input_file = Path(sys.argv[1].replace("-", "‐"))
+    output_name = Path(sys.argv[2])
 
     with open(input_file, "r") as f:
         data = f.read()
 
-    save_to_txt(data, input_file)
-    save_to_html(data, input_file)
+    save_to_txt(data, input_file, output_name)
+    save_to_html(data, input_file, output_name)
