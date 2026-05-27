@@ -1,0 +1,14 @@
+[1mGdvc-(Init)[0m
+===========
+
+[1mName[0m
+gdvc-init - Initializes a level for Gdvc
+
+[1mSynopsis[0m
+[3mgdvc init
+[0m
+[1mDescription[0m
+Modifies your level's string and changes the unused in-game key [3mkA26[0m which stores a special value, allowing Gdvc to locate the working directory on your PC.
+
+[1mWarning (for devs)[0m
+Since Gdvc uses the [3mkA26[0m key, ensure your program does not conflict with Gdvc. A program could theoretically use the entire range of numbers for [3mkA26[0m which stores an int value (i32).

@@ -1,0 +1,13 @@
+= Gdvc-(Init)
+
+== Name
+gdvc-init - Initializes a level for Gdvc
+
+== Synopsis
+`gdvc init`
+
+== Description
+Modifies your level's string and changes the unused in-game key __kA26__ which stores a special value, allowing Gdvc to locate the working directory on your PC.
+
+== Warning (for devs)
+Since Gdvc uses the __kA26__ key, ensure your program does not conflict with Gdvc. A program could theoretically use the entire range of numbers for __kA26__ which stores an int value (i32).
