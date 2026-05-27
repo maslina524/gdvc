@@ -46,5 +46,32 @@ function Download-Exe {
     Write-Host "  ...Successfully"
 }
 
+function AddTo_Path {
+    param(
+        [string]$Directory
+    )
+
+    Write-Host "Adding directory to PATH..."
+    $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    $PathEntries = $UserPath -split ';' | Where-Object { $_ -ne '' }
+
+    if ($PathEntries -contains $Directory) {
+        Write-Host "  Gdvc is already in the PATH"
+    } else {
+        try {
+            [Environment]::SetEnvironmentVariable(
+                "Path",
+                $userPath + ";$install_folder",
+                "User"
+            )
+            Write-Host "  ...Successfully"
+            Write-Host "  Please restart your terminal to use Gdvc."
+        } catch {
+            Write-Host "  Failed to update PATH: $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+}
+
 Download-Exe -Repository $Repo -Destination $ExePath
 Download-Source -Repository $Repo -Folder "doc" -Destination $DocPath
+AddTo_Path -Directory $InstallFolder
