@@ -1,0 +1,19 @@
+[1mGdvc-(Commit)[0m
+=============
+
+[1mName[0m
+gdvc-commit - Creates a backup of the entire level and saves it on your PC
+
+[1mSynopsis[0m
+[3mgdvc commit [-m | --message <msg>]
+[0m
+[1mDescription[0m
+Creates a backup of the entire level, compresses it, and saves it as a commit in the level's folder on your PC, and also sets HEAD to the commit hash.
+
+[1mOptions[0m
+[3m-m | --message
+	Sets a message for the commit.
+[0m
+[1mExample[0m
+[3mgdvc commit -m "Initial commit"
+[0m

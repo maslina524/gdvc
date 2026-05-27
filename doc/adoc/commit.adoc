@@ -1,0 +1,17 @@
+= Gdvc-(Commit)
+
+== Name
+gdvc-commit - Creates a backup of the entire level and saves it on your PC
+
+== Synopsis
+`gdvc commit [-m | --message <msg>]`
+
+== Description
+Creates a backup of the entire level, compresses it, and saves it as a commit in the level's folder on your PC, and also sets HEAD to the commit hash.
+
+== Options
+`-m | --message`
+`	Sets a message for the commit.`
+
+== Example
+`gdvc commit -m "Initial commit"`
