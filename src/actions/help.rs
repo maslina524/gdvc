@@ -1,10 +1,12 @@
+use std::fs;
 use std::path::PathBuf;
-
 use std::process::Command;
 
-pub fn run(command: Option<String>) -> Result<(), String> {
+use crate::terminal::print_by_line_str;
+
+pub fn run(command: Option<String>, target: Option<String>) -> Result<(), String> {
     if let Some(cmd) = command {
-        cmd_handler(&cmd)?;
+        cmd_handler(&cmd, &target)?;
         return Ok(());
     }
     println!("usage: gdvc [-v | --version] [-p | --path]");
@@ -26,8 +28,14 @@ pub fn run(command: Option<String>) -> Result<(), String> {
     Ok(())
 }
 
-fn cmd_handler(cmd: &str) -> Result<(), String> {
-    let target = "html";
+fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
+    let target = match target {
+        Some(t) => match t.as_str() {
+            "html" | "adoc" | "txt" => t,
+            _ => return Err("invalid value for target, use html, adoc, or text".to_string())
+        },
+        None => "html"
+    };
     let path_str = format!("./doc/{target}/{cmd}.{target}");
     let path = PathBuf::from(&path_str);
 
@@ -35,6 +43,18 @@ fn cmd_handler(cmd: &str) -> Result<(), String> {
         return Err(format!("fatal: '{path_str}': documentation file not found."));
     }
 
+    if target == "html" {
+        open_html(&path_str)?
+    } else {
+        let doc_str = fs::read_to_string(path)
+            .map_err(|e| format!("{e}"))?;
+        print_by_line_str(&doc_str)?
+    }
+
+    Ok(())
+}
+
+fn open_html(path_str: &str) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     let status = Command::new("cmd").args(&["/C", "start", &path_str]).status();
     

@@ -78,6 +78,9 @@ enum Commands {
     Help {
         #[arg(required = false)]
         command: Option<String>,
+
+        #[arg(long = "target", short = 't', required = false)]
+        target: Option<String>,
     },
 
     #[command(external_subcommand)]
@@ -96,7 +99,7 @@ fn main() {
             } else if cli.version {
                 println!("gdvc v{VERSION}");
             } else {
-                actions::help::run(None).unwrap();
+                actions::help::run(None, None).unwrap();
             }
             std::process::exit(0);
         }
@@ -124,8 +127,8 @@ fn main() {
         Commands::Diff {  } => {
             actions::diff::run()
         },
-        Commands::Help { command } => {
-            actions::help::run(command)
+        Commands::Help { command, target } => {
+            actions::help::run(command, target)
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();
