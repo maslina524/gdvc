@@ -3,6 +3,19 @@ $ExePath = "$InstallFolder\gdvc.exe"
 $DocPath = "$InstallFolder\doc"
 $SourcePath = "$InstallFolder\source"
 $Repo = "maslina524/gdvc"
+$MaxLength = 30
+
+function Dot-Print {
+    param(
+        [string]$Message
+    )
+
+    Write-Host "$($Message) " -NoNewLine
+    for ($i = 0; $i -le $MaxLength - $Message.Length; $i++) {
+        Write-Host "." -NoNewLine
+    }
+    Write-Host " " -NoNewLine
+}
 
 function Download-Source {
     param(
@@ -11,22 +24,23 @@ function Download-Source {
         [string]$Destination
     )
 
-    Write-Host "Installing the doc directory from GitHub..."
+    Write-Host "Installing the doc directory from GitHub:"
     Invoke-WebRequest -Uri "https://api.github.com/repos/$($Repository)/zipball/main" -OutFile "$($SourcePath).zip"
 
-    Write-Host "  Extracting archive"
+    Dot-Print "  Extracting archive"
     Expand-Archive -Path "$($SourcePath).zip" -DestinationPath "$($SourcePath)" -Force
+    Write-Host "Successfully"
 
     $SubfolderName = Get-ChildItem -Path "$($SourcePath)" -Directory | Select-Object -ExpandProperty Name
 
-    Write-Host "  Copying directory"
+    Dot-Print "  Copying directory"
     Remove-Item -Path $DocPath -Recurse -Force
     Copy-Item -Path "$($SourcePath)\$($SubfolderName)\$($Folder)" -Destination $DocPath -Recurse -Force
     
     Remove-Item -Path "$($SourcePath).zip" -Recurse -Force
     Remove-Item -Path "$($SourcePath)" -Recurse -Force
 
-    Write-Host "  ...Successfully"
+    Write-Host "Successfully`n"
 }
 
 function Download-Exe {
@@ -36,14 +50,14 @@ function Download-Exe {
         [string]$Destination
     )
 
-    Write-Host "Installing gdvc.exe from the latest release..."
+    Write-Host "Installing gdvc.exe from the latest release:"
     $Response = Invoke-RestMethod "https://api.github.com/repos/$($Repository)/releases/latest"
     $DownloadUrl = ($Response.assets | Where-Object { $_.name -eq "gdvc.exe" }).browser_download_url
 
-    Write-Host "  Downloading"
+    Dot-Print "  Downloading"
     Invoke-WebRequest -Uri $DownloadUrl -OutFile $Destination
 
-    Write-Host "  ...Successfully"
+    Write-Host "Successfully`n"
 }
 
 function AddTo_Path {
@@ -51,12 +65,12 @@ function AddTo_Path {
         [string]$Directory
     )
 
-    Write-Host "Adding directory to PATH..."
+    Dot-Print "Adding directory to PATH"
     $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
     $PathEntries = $UserPath -split ';' | Where-Object { $_ -ne '' }
 
     if ($PathEntries -contains $Directory) {
-        Write-Host "  Gdvc is already in the PATH"
+        Write-Host "Already"
     } else {
         try {
             [Environment]::SetEnvironmentVariable(
@@ -64,10 +78,10 @@ function AddTo_Path {
                 $userPath + ";$install_folder",
                 "User"
             )
-            Write-Host "  ...Successfully"
-            Write-Host "  Please restart your terminal to use Gdvc."
+            Write-Host "Successfully"
+            Write-Host "Please restart your terminal to use Gdvc."
         } catch {
-            Write-Host "  Failed to update PATH: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "Failed to update PATH: $($_.Exception.Message)" -ForegroundColor Red
         }
     }
 }
