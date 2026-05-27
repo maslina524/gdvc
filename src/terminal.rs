@@ -30,10 +30,9 @@ pub fn print_by_line(lines: &Vec<String>) -> Result<(), String> {
             return Ok(())
         }
         
-        // Поднимаемся на строку вверх, очищаем её и выводим новую строку
-        print!("\x1b[1A");        // Вверх на одну строку
-        print!("\r\x1b[2K");      // В начало строки и очистить
-        println!("{}", lines[i]); // Вывести новую строку
+        print!("\x1b[1A");
+        print!("\r\x1b[2K");
+        println!("{}", lines[i]);
         
         i += 1
     }
