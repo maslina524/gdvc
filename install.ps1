@@ -29,4 +29,22 @@ function Download-Source {
     Write-Host "  ...Successfully"
 }
 
-Download-Source -Repo $Repo -Folder "doc" -Destination $DocPath
+function Download-Exe {
+    param(
+        [string]$Repository,
+        [string]$Folder,
+        [string]$Destination
+    )
+
+    Write-Host "Installing gdvc.exe from the latest release..."
+    $Response = Invoke-RestMethod "https://api.github.com/repos/$($Repository)/releases/latest"
+    $DownloadUrl = ($Response.assets | Where-Object { $_.name -eq "gdvc.exe" }).browser_download_url
+
+    Write-Host "  Downloading"
+    Invoke-WebRequest -Uri $DownloadUrl -OutFile $Destination
+
+    Write-Host "  ...Successfully"
+}
+
+Download-Exe -Repository $Repo -Destination $ExePath
+Download-Source -Repository $Repo -Folder "doc" -Destination $DocPath
