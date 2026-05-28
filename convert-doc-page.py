@@ -1,4 +1,4 @@
-import sys
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -70,19 +70,17 @@ def save_to_html(data: str, path: Path, output_name: str) -> None: # use asciido
     subprocess.run(f"asciidoctor -o doc/html/{output_name}.html doc/adoc/{output_name}.adoc", shell=True)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Input file path expected!")
-        sys.exit(1)
+    # cd gdvc.wiki; git pull; cd ..   update
+    # python3 convert-doc-page.py     run
+    for item in os.listdir("gdvc.wiki"):
+        match = re.search(r"Gdvc‐\(([^)]+)\).md", item)
+        if not match:
+            continue
+        
+        name = match.group(1).lower()
+        print(f"Convert {item} to {name}")
+        with open(Path("gdvc.wiki") / item, "r") as f:
+            data = f.read()
 
-    if len(sys.argv) < 3:
-        print("Output file name path expected!")
-        sys.exit(1)
-
-    input_file = Path(sys.argv[1].replace("-", "‐"))
-    output_name = Path(sys.argv[2])
-
-    with open(input_file, "r") as f:
-        data = f.read()
-
-    save_to_txt(data, input_file, output_name)
-    save_to_html(data, input_file, output_name)
+        save_to_txt(data, item, name)
+        save_to_html(data, item, name)
