@@ -2,8 +2,8 @@ use std::fs;
 
 use crate::actions::commit::{Commit, read_commit, sort_commits};
 use crate::ws::WsClient;
-use crate::level::{self, decode_string};
-use crate::files::{self, get_level_path};
+use crate::level;
+use crate::files;
 
 pub fn run(target: String, soft: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
@@ -11,7 +11,7 @@ pub fn run(target: String, soft: bool) -> Result<(), String> {
     let string = ws.get_level_string()?;
     let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
 
-    let path = get_level_path(marker).join("commits");
+    let path = files::get_level_path(marker).join("commits");
     let files = fs::read_dir(path)
         .map_err(|e| format!("Failed to get commits: {e}"))?;
 
@@ -22,16 +22,16 @@ pub fn run(target: String, soft: bool) -> Result<(), String> {
         commits.push(cur_commit);
     }
 
-    let head_hash = fs::read_to_string(get_level_path(marker).join("HEAD"))
+    let head_hash = fs::read_to_string(files::get_level_path(marker).join("HEAD"))
         .map_err(|e| format!("Failed to read the HEAD file: {e}"))?;
     let target_commit = get_target_commit(&mut commits, &target, &head_hash)?;
     files::create_head_file(marker, &target_commit.hash)?;
 
     if !soft {
-        let path = get_level_path(marker).join("commits").join(&target_commit.hash);
+        let path = files::get_level_path(marker).join("commits").join(&target_commit.hash);
         let encoded_string = read_commit(&path)?.string;
 
-        let level_string = decode_string(&encoded_string)?;
+        let level_string = level::decode_string(&encoded_string)?;
         ws.replace_level_string(&level_string)
             .map_err(|e| format!("Failed to update level: {e}"))?;
     }
