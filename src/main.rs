@@ -12,7 +12,7 @@ mod terminal;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]
-#[command(about = "git for Geometry Dash levels", long_about = None)]
+#[command(about = "Git for Geometry Dash levels", long_about = None)]
 #[command(disable_help_subcommand = true)]
 #[command(subcommand_required = false)]
 struct Cli {
@@ -103,7 +103,7 @@ fn main() {
                 let path = current_exe().unwrap().display().to_string();
                 println!("{path}");
             } else if cli.version {
-                println!("gdvc v{VERSION}");
+                println!("Gdvc v{VERSION}");
             } else {
                 actions::help::run(None, None).unwrap();
             }
@@ -138,7 +138,7 @@ fn main() {
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();
-            Err(format!("gdvc: `{cmd_name}` is not a gdvc command."))
+            Err(format!("Gdvc: `{cmd_name}` is not a gdvc command"))
         }
     };
 

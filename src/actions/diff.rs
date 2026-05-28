@@ -14,7 +14,7 @@ pub fn run() -> Result<(), String> {
     let string = ws.get_level_string()?;
     let marker = match get_marker(&string) {
         Some(m) => m,
-        None => return Err("The level is not initialized.".to_string())
+        None => return Err("The level is not initialized".to_string())
     };
 
     let head_hash = fs::read_to_string(get_level_path(marker).join("HEAD"))

@@ -123,7 +123,7 @@ pub fn run(message: &String, amend: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
-    let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+    let marker = level::get_marker(&string).ok_or("The level is not initialized".to_string())?;
 
     if amend {
         let head_hash = fs::read_to_string(files::get_level_path(marker).join("HEAD"))

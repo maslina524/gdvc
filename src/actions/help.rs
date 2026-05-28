@@ -9,19 +9,19 @@ pub fn run(command: Option<String>, target: Option<String>) -> Result<(), String
         cmd_handler(&cmd, &target)?;
         return Ok(());
     }
-    println!("usage: gdvc [-v | --version] [-p | --path]");
+    println!("Usage: gdvc [-v | --version] [-p | --path]");
     println!("            <command> [<args>]");
 
-    println!("\nstart a working area");
+    println!("\nStart a working area");
     println!("    init        Initialize your level for Gdvc");
     println!("    destroy     Remove all Gdvc tracking");
     println!("    restore     Prints and replaces the Gdvc level marker");
 
-    println!("\nexamine the history and state");
+    println!("\nExamine the history and state");
     println!("    log         Show commit logs");
     println!("    diff        Show changes between commits");
 
-    println!("\nwork on the current");
+    println!("\nWork on the current");
     println!("    commit      Record the changes");
     println!("    rollback    Restore the level to a previous commit");
 
@@ -32,7 +32,7 @@ fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
     let target = match target {
         Some(t) => match t.as_str() {
             "html" | "adoc" | "txt" => t,
-            _ => return Err("invalid value for target, use html, adoc, or text".to_string())
+            _ => return Err("Invalid value for target, use html, adoc, or text".to_string())
         },
         None => "html"
     };
@@ -44,7 +44,7 @@ fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
     println!("{path_str}");
 
     if !path.exists() {
-        return Err(format!("fatal: '{path_str}': documentation file not found."));
+        return Err(format!("Fatal: '{path_str}': documentation file not found"));
     }
 
     if target == "html" {
@@ -70,6 +70,6 @@ fn open_html(path_str: &str) -> Result<(), String> {
 
     match status {
         Ok(_) => Ok(()),
-        Err(e) => Err(format!("failed to open file: {}", e)),
+        Err(e) => Err(format!("Failed to open file: {}", e)),
     }
 }

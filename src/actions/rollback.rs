@@ -9,7 +9,7 @@ pub fn run(target: String, soft: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
-    let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+    let marker = level::get_marker(&string).ok_or("The level is not initialized".to_string())?;
 
     let path = files::get_level_path(marker).join("commits");
     let files = fs::read_dir(path)
@@ -54,7 +54,7 @@ fn get_target_commit<'a>(mut commits: &'a mut [Commit], target: &String, head_ha
         let i = match target.find('~') {
             Some(index) => {
                 target[index + 1..].parse::<usize>()
-                    .map_err(|_| "Incorrect index.")?
+                    .map_err(|_| "Incorrect index")?
             },
             None => 0
         };
@@ -71,7 +71,7 @@ fn get_target_commit<'a>(mut commits: &'a mut [Commit], target: &String, head_ha
                 return Ok(&commits[idx])
             }
         }
-        return Err("No commit with this timestamp was found.".to_string())
+        return Err("No commit with this timestamp was found".to_string())
     }
 
     // hash
@@ -82,10 +82,10 @@ fn get_target_commit<'a>(mut commits: &'a mut [Commit], target: &String, head_ha
                 return Ok(&commits[idx])
             }
         }
-        return Err("No commit with this hash was found.".to_string())
+        return Err("No commit with this hash was found".to_string())
     }
 
-    Err("Incorrect options for specifying commits.".to_string())
+    Err("Incorrect options for specifying commits".to_string())
 }
 
 fn is_hex_string(s: &String) -> bool {

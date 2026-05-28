@@ -13,17 +13,17 @@ pub fn run(force: bool, hard: bool) -> Result<(), String> {
 
     let marker = match get_marker(&string) {
         Some(m) => m,
-        None => return Err("The level is not initialized.".to_string())
+        None => return Err("The level is not initialized".to_string())
     };
 
     if !force {
-        println!("This action will remove all gdvc tracking from your level.");
-        println!("This operation is irreversible.\n");
+        println!("This action will remove all gdvc tracking from your level");
+        println!("This operation is irreversible\n");
 
         if hard {
             println!("[!] With --hard, this will also permanently delete the entire");
-            println!("    level directory for this level from your disk.");
-            println!("    All commits will be lost forever.\n");
+            println!("    level directory for this level from your disk");
+            println!("    All commits will be lost forever\n");
         }
 
         println!("Type {}YES{} to confirm:", YELLOW, ESC);

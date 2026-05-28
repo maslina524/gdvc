@@ -69,7 +69,7 @@ pub fn encode_string(string: &String) -> Result<String, String> {
     let gzipped = encoder
         .finish()
         .into_result()
-        .map_err(|_| "Failed to compress the level using gzip.")?;
+        .map_err(|_| "Failed to compress the level using gzip")?;
 
     let base64_encoded = BASE64_URL_SAFE.encode(gzipped);
 
@@ -82,7 +82,7 @@ pub fn decode_string(string: &String) -> Result<String, String> {
 
     let mut decoder = Decoder::new(&base64_decoded[..]).unwrap();
     let mut decompressed = Vec::new();
-    decoder.read_to_end(&mut decompressed).map_err(|_| "Failed to compress the level using gzip.")?; 
+    decoder.read_to_end(&mut decompressed).map_err(|_| "Failed to compress the level using gzip")?; 
 
     let decompressed_string = String::from_utf8(decompressed).unwrap();
     Ok(decompressed_string)

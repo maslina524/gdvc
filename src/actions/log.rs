@@ -11,7 +11,7 @@ pub fn run(oneline: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
-    let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+    let marker = level::get_marker(&string).ok_or("The level is not initialized".to_string())?;
 
     let path = get_level_path(marker).join("commits");
     let files = fs::read_dir(path)

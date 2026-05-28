@@ -15,7 +15,7 @@ pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), 
     if let Some(str_path) = gmd {
         let path = PathBuf::from(str_path);
         if !path.is_file() {
-            return Err("The gmd path is not a file.".to_string())
+            return Err("The gmd path is not a file".to_string())
         }
 
         let mut data = fs::read_to_string(&path)
@@ -43,15 +43,15 @@ pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), 
             .map_err(|e| format!("Failed to parse xml: {e}"))?;
         let k4 = plist
             .as_dictionary()
-            .ok_or("Gmd is not a dict.")?
+            .ok_or("Gmd is not a dict")?
             .get("k4")
-            .ok_or("The k4 key does not exist.")?
+            .ok_or("The k4 key does not exist")?
             .as_string()
             .unwrap()
             .to_string();
         let decoded_string = level::decode_string(&k4)?;
         let new_marker = level::get_marker(&decoded_string)
-            .ok_or("There is no marker in the gmd file.")?;
+            .ok_or("There is no marker in the gmd file")?;
 
         let old_string = ws.get_level_string()?;
         let new_string = level::set_marker(&old_string, new_marker);
@@ -71,7 +71,7 @@ pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), 
         return Ok(())
     }
 
-    let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+    let marker = level::get_marker(&string).ok_or("The level is not initialized".to_string())?;
 
     if clean {
         println!("{marker}");

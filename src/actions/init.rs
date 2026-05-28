@@ -11,7 +11,7 @@ pub fn run(quiet: bool) -> Result<(), String> {
     let marker = level::get_marker(&string);
 
     if let Some(_) = marker {
-        eprintln!("Gdvc is already initialized at this level.");
+        eprintln!("Gdvc is already initialized at this level");
         return Ok(())
     }
 
@@ -24,7 +24,7 @@ pub fn run(quiet: bool) -> Result<(), String> {
     let _ = ws.replace_level_string(&new_string);
 
     if quiet {
-        println!("Initialized empty Gdvc repository in {}.", files::get_level_path(timestamp).display());
+        println!("Initialized empty Gdvc repository in {}", files::get_level_path(timestamp).display());
     }
 
     let _ = ws.disconnect();
