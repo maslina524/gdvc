@@ -28,7 +28,10 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Init,
+    Init {
+        #[arg(short = 'q', long = "quiet", required = false)]
+        quiet: bool,
+    },
 
     Destroy {
         #[arg(short = 'f', long = "force", required = false)]
@@ -109,8 +112,8 @@ fn main() {
     };
 
     let status: Result<(), String> = match cmd {
-        Commands::Init => {
-            actions::init::run()
+        Commands::Init { quiet } => {
+            actions::init::run(quiet)
         },
         Commands::Commit { message, amend} => {
             actions::commit::run(&message, amend)
