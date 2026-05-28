@@ -44,6 +44,9 @@ enum Commands {
     Commit {
         #[arg(short = 'm', long = "message", required = true)]
         message: String,
+
+        #[arg(long = "amend", required = false)]
+        amend: bool,
     },
 
     Rollback {
@@ -109,8 +112,8 @@ fn main() {
         Commands::Init => {
             actions::init::run()
         },
-        Commands::Commit { message } => {
-            actions::commit::run(&message)
+        Commands::Commit { message, amend} => {
+            actions::commit::run(&message, amend)
         },
         Commands::Rollback { target, soft, _hard } => {
             actions::rollback::run(target, soft)

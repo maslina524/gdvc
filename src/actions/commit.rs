@@ -119,11 +119,32 @@ pub fn sort_commits(commits: &mut [Commit]) {
     }
 }
 
-pub fn run(message: &String) -> Result<(), String> {
+pub fn run(message: &String, amend: bool) -> Result<(), String> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
     let marker = level::get_marker(&string).ok_or("The level is not initialized.".to_string())?;
+
+    if amend {
+        let head_hash = fs::read_to_string(files::get_level_path(marker).join("HEAD"))
+            .map_err(|e| format!("Failed to read the HEAD file: {e}"))?;
+
+        let path = files::get_level_path(marker).join("commits").join(head_hash);
+        let commit = read_commit(&path)?;
+
+        let mut file = File::create(path)
+            .map_err(|e| format!("Failed to create commit file: {}", e))?;
+
+        let file_data= vec![
+            &commit.timestamp.to_string(),
+            message,
+            "",
+            &commit.string
+        ].join("\n");
+
+        let _ = file.write_all(&file_data.as_bytes());
+        return Ok(())
+    }
 
     files::create_level_folder(marker)?;
 
