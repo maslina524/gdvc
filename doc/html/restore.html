@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.26">
-<title>Gdvc-(Commit)</title>
+<title>Restore</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,14 +436,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Gdvc-(Commit)</h1>
+<h1>Restore</h1>
 </div>
 <div id="content">
 <div class="sect1">
 <h2 id="_name">Name</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>gdvc-commit - Creates a backup of the entire level and saves it on your PC</p>
+<p>gdvc-restore - Getting the Gdvc marker and restoring from it</p>
 </div>
 </div>
 </div>
@@ -451,7 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_synopsis">Synopsis</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>gdvc commit [-m | --message &lt;msg&gt;] [--amend]</p>
+<p>gdvc restore [-s | --set] [--gmd] [-c | --clean]</p>
 </div>
 </div>
 </div>
@@ -459,7 +459,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_description">Description</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Creates a backup of the entire level, compresses it, and saves it as a commit in the level&#8217;s folder on your PC, and also sets HEAD to the commit hash.</p>
+<p>Getting the level&#8217;s special identifying Gdvc marker set with the init subcommand or changing it for restoration.</p>
 </div>
 </div>
 </div>
@@ -468,31 +468,44 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>-m</code> </dt>
-<dt class="hdlist1"><code>--message</code> </dt>
+<dt class="hdlist1"><code>-s</code> </dt>
+<dt class="hdlist1"><code>--set</code> </dt>
 <dd>
-<p>Sets a message for the commit.</p>
+<p>Sets a marker for the level.</p>
 </dd>
-<dt class="hdlist1"><code>--amend</code> </dt>
+<dt class="hdlist1"><code>--gmd</code> </dt>
 <dd>
-<p>Changes the last commit&#8217;s message using the [-m | --message] flag.</p>
+<p>Restoring the marker using a gmd file.</p>
+</dd>
+<dt class="hdlist1"><code>-c</code> </dt>
+<dt class="hdlist1"><code>--clean</code> </dt>
+<dd>
+<p>Output the current marker without extra details.</p>
 </dd>
 </dl>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_example">Example</h2>
+<h2 id="_why_is_0_an_invalid_value">Why Is 0 An Invalid Value</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>gdvc commit -m "Initial commit"</p>
+<p>The program uses the <em>kA26</em> key in the level&#8217;s metadata, it is present by default in every created level and always equals 0, so Gdvc considers that if <em>kA26</em> is not 0, it is a Gdvc marker, and if it equals 0, the level is not initialized.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fun_fact">Fun Fact</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Gdvc marker is just a timestamp recorded when the level was initialized, for a possible larger time range negative values are used (so the marker can store a value up to the year 2106 instead of 2038), but because of this when the timestamp equals the offset, the marker value will be 0, meaning the program will think the level is not initialized, this will happen on Jan 19 2038 03:14:08 for exactly one second.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-05-29 19:54:38 +0300
+Last updated 2026-05-29 19:54:41 +0300
 </div>
 </div>
 </body>

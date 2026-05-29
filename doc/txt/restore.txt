@@ -1,0 +1,25 @@
+[1mRestore[0m
+=======
+
+[1mName[0m
+gdvc-restore - Getting the Gdvc marker and restoring from it
+
+[1mSynopsis[0m
+[3mgdvc restore [-s | --set] [--gmd] [-c | --clean]
+[0m
+[1mDescription[0m
+Getting the level's special identifying Gdvc marker set with the init subcommand or changing it for restoration.
+
+[1mOptions[0m
+[3m-s | --set
+	Sets a marker for the level.
+[0m[3m--gmd
+	Restoring the marker using a gmd file.
+[0m[3m-c | --clean
+	Output the current marker without extra details.
+[0m
+[1mWhy Is 0 An Invalid Value[0m
+The program uses the [3mkA26[0m key in the level's metadata, it is present by default in every created level and always equals 0, so Gdvc considers that if [3mkA26[0m is not 0, it is a Gdvc marker, and if it equals 0, the level is not initialized.
+
+[1mFun Fact[0m
+The Gdvc marker is just a timestamp recorded when the level was initialized, for a possible larger time range negative values are used (so the marker can store a value up to the year 2106 instead of 2038), but because of this when the timestamp equals the offset, the marker value will be 0, meaning the program will think the level is not initialized, this will happen on Jan 19 2038 03:14:08 for exactly one second.

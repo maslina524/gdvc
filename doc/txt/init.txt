@@ -5,7 +5,7 @@
 gdvc-init - Initializes a level for Gdvc
 
 [1mSynopsis[0m
-[3mgdvc init
+[3mgdvc init [-q | --quiet]
 [0m
 [1mDescription[0m
 Modifies your level's string and changes the unused in-game key [3mkA26[0m which stores a special value, allowing Gdvc to locate the working directory on your PC.
