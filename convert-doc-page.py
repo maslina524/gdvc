@@ -46,6 +46,7 @@ def save_to_html(data: str, path: Path, output_name: str) -> None: # use asciido
     lines = data.split("\n")
     ret = []
     is_code = False
+    is_option = False
     for line in lines:
         if line.startswith("# "):
             ret.append(f"= {line[2:]}\n")
@@ -59,8 +60,22 @@ def save_to_html(data: str, path: Path, output_name: str) -> None: # use asciido
         else:
             if line != "":
                 if is_code:
-                    ret.append(f"`{re_line_adoc(line)}`\n")
+                    if is_option:
+                        ret.append("\n")
+
+                    is_option = True
+                    if line.startswith("-"):
+                        parts = line.split("|")
+                        for part in parts:
+                            ret.append(f"`{part.strip()}` ::\n")
+                        
+                    else:
+                        if is_option:
+                            ret.append(f"{re_line_adoc(line)}\n")
+                        else:
+                            ret.append(f"`{re_line_adoc(line)}`\n")
                 else:
+                    is_option = False
                     ret.append(f"{re_line_adoc(line)}\n")
     
     output = "".join(ret)
