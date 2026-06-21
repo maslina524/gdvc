@@ -1,3 +1,4 @@
 /target
 *.gmd
 /gdvc.wiki
+Cargo.lock
