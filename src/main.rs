@@ -111,7 +111,7 @@ fn main() {
         }
     };
 
-    let status: Result<(), String> = match cmd {
+    let status: Result<(), Box<dyn std::error::Error>> = match cmd {
         Commands::Init { quiet } => {
             actions::init::run(quiet)
         },
@@ -138,7 +138,7 @@ fn main() {
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();
-            Err(format!("Gdvc: `{cmd_name}` is not a gdvc command"))
+            Err(format!("Gdvc: `{cmd_name}` is not a gdvc command").into())
         }
     };
 

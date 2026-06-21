@@ -4,7 +4,7 @@ use std::process::Command;
 
 use crate::terminal::print_by_line_str;
 
-pub fn run(command: Option<String>, target: Option<String>) -> Result<(), String> {
+pub fn run(command: Option<String>, target: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     if let Some(cmd) = command {
         cmd_handler(&cmd, &target)?;
         return Ok(());
@@ -28,11 +28,11 @@ pub fn run(command: Option<String>, target: Option<String>) -> Result<(), String
     Ok(())
 }
 
-fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
+fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     let target = match target {
         Some(t) => match t.as_str() {
             "html" | "adoc" | "txt" => t,
-            _ => return Err("Invalid value for target, use html, adoc, or text".to_string())
+            _ => return Err("Invalid value for target, use html, adoc, or text".into())
         },
         None => "html"
     };
@@ -44,7 +44,7 @@ fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
     println!("{path_str}");
 
     if !path.exists() {
-        return Err(format!("Fatal: '{path_str}': documentation file not found"));
+        return Err(format!("Fatal: '{path_str}': documentation file not found").into());
     }
 
     if target == "html" {
@@ -58,7 +58,7 @@ fn cmd_handler(cmd: &str, target: &Option<String>) -> Result<(), String> {
     Ok(())
 }
 
-fn open_html(path_str: &str) -> Result<(), String> {
+fn open_html(path_str: &str) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(target_os = "windows")]
     let status = Command::new("cmd").args(&["/C", "start", &path_str]).status();
     
@@ -70,6 +70,6 @@ fn open_html(path_str: &str) -> Result<(), String> {
 
     match status {
         Ok(_) => Ok(()),
-        Err(e) => Err(format!("Failed to open file: {}", e)),
+        Err(e) => Err(format!("Failed to open file: {}", e).into()),
     }
 }

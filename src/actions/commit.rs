@@ -119,7 +119,7 @@ pub fn sort_commits(commits: &mut [Commit]) {
     }
 }
 
-pub fn run(message: &String, amend: bool) -> Result<(), String> {
+pub fn run(message: &String, amend: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;

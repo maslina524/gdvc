@@ -7,7 +7,7 @@ use crate::ws::WsClient;
 use crate::level;
 use crate::consts::{YELLOW, ESC, GD_PLIST_TAGS_FORMAT};
 
-pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), String> {
+pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
@@ -15,7 +15,7 @@ pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), 
     if let Some(str_path) = gmd {
         let path = PathBuf::from(str_path);
         if !path.is_file() {
-            return Err("The gmd path is not a file".to_string())
+            return Err("The gmd path is not a file".into())
         }
 
         let mut data = fs::read_to_string(&path)
@@ -62,7 +62,7 @@ pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), 
 
     if let Some(m) = marker {
         if m == 0 {
-            return Err("Cannot set 0 as the level marker".to_string())
+            return Err("Cannot set 0 as the level marker".into())
         }
         let new_string = level::set_marker(&string, m);
         ws.replace_level_string(&new_string)

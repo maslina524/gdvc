@@ -6,3 +6,4 @@ pub mod log;
 pub mod rollback;
 pub mod restore;
 pub mod diff;
+pub mod export;

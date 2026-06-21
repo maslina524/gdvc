@@ -8,13 +8,13 @@ use crate::actions::commit::read_commit;
 use crate::ws::WsClient;
 use crate::consts::{BOLD, ESC};
 
-pub fn run() -> Result<(), String> {
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;
     let marker = match get_marker(&string) {
         Some(m) => m,
-        None => return Err("The level is not initialized".to_string())
+        None => return Err("The level is not initialized".into())
     };
 
     let head_hash = fs::read_to_string(get_level_path(marker).join("HEAD"))

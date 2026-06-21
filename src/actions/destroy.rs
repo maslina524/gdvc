@@ -6,14 +6,14 @@ use crate::level::{get_marker, set_marker};
 use crate::files;
 use crate::consts::{ESC, YELLOW};
 
-pub fn run(force: bool, hard: bool) -> Result<(), String> {
+pub fn run(force: bool, hard: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let mut string = ws.get_level_string()?;
 
     let marker = match get_marker(&string) {
         Some(m) => m,
-        None => return Err("The level is not initialized".to_string())
+        None => return Err("The level is not initialized".into())
     };
 
     if !force {
