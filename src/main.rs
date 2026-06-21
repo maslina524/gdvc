@@ -1,7 +1,4 @@
-use std::env::current_exe;
 use clap::{Parser, Subcommand};
-
-use crate::consts::VERSION;
 
 mod ws;
 mod level;
@@ -16,12 +13,6 @@ mod terminal;
 #[command(disable_help_subcommand = true)]
 #[command(subcommand_required = false)]
 struct Cli {
-    #[arg(short = 'v', long = "version", global = true, conflicts_with = "path")]
-    version: bool,
-
-    #[arg(short = 'p', long = "path", global = true, conflicts_with = "version")]
-    path: bool,
-
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -89,6 +80,14 @@ enum Commands {
         target: Option<String>,
     },
 
+    Export {
+        #[arg(short = 'm', long = "marker", required = false)]
+        marker: Option<u32>,
+
+        #[arg(short = 'p', long = "path", required = false)]
+        path: Option<String>,
+    },
+
     #[command(external_subcommand)]
     Other(Vec<String>),
 }
@@ -99,15 +98,8 @@ fn main() {
     let cmd = match cli.command {
         Some(c) => c,
         None => {
-            if cli.path {
-                let path = current_exe().unwrap().display().to_string();
-                println!("{path}");
-            } else if cli.version {
-                println!("Gdvc v{VERSION}");
-            } else {
-                actions::help(None, None).unwrap();
-            }
-            std::process::exit(0);
+            actions::help(None, None).unwrap();
+            return;
         }
     };
 
@@ -135,6 +127,9 @@ fn main() {
         },
         Commands::Help { command, target } => {
             actions::help(command, target)
+        },
+        Commands::Export { marker, path } => {
+            actions::export(marker, path)
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();
