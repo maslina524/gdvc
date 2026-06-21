@@ -8,7 +8,7 @@ use crate::actions::commit::read_commit;
 use crate::ws::WsClient;
 use crate::consts::{BOLD, ESC};
 
-pub fn run() -> Result<(), Box<dyn std::error::Error>> {
+pub fn diff() -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;

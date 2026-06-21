@@ -4,7 +4,7 @@ use crate::files;
 use crate::ws::WsClient;
 use crate::level::{self, set_marker};
 
-pub fn run(quiet: bool) -> Result<(), Box<dyn std::error::Error>> {
+pub fn init(quiet: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let mut string = ws.get_level_string()?;

@@ -7,7 +7,7 @@ use crate::ws::WsClient;
 use crate::level;
 use crate::consts::{YELLOW, ESC, GD_PLIST_TAGS_FORMAT};
 
-pub fn run(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn restore(clean: bool, marker: Option<u32>, gmd: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;

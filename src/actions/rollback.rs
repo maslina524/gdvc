@@ -5,7 +5,7 @@ use crate::ws::WsClient;
 use crate::level;
 use crate::files;
 
-pub fn run(target: String, soft: bool) -> Result<(), Box<dyn std::error::Error>> {
+pub fn rollback(target: String, soft: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;

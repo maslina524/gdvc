@@ -105,7 +105,7 @@ fn main() {
             } else if cli.version {
                 println!("Gdvc v{VERSION}");
             } else {
-                actions::help::run(None, None).unwrap();
+                actions::help(None, None).unwrap();
             }
             std::process::exit(0);
         }
@@ -113,28 +113,28 @@ fn main() {
 
     let status: Result<(), Box<dyn std::error::Error>> = match cmd {
         Commands::Init { quiet } => {
-            actions::init::run(quiet)
+            actions::init(quiet)
         },
         Commands::Commit { message, amend} => {
-            actions::commit::run(&message, amend)
+            actions::commit(&message, amend)
         },
         Commands::Rollback { target, soft, _hard } => {
-            actions::rollback::run(target, soft)
+            actions::rollback(target, soft)
         },
         Commands::Restore { clean, marker, gmd } => {
-            actions::restore::run(clean, marker, gmd)
+            actions::restore(clean, marker, gmd)
         },
         Commands::Destroy { force, _soft, hard } => {
-            actions::destroy::run(force, hard)
+            actions::destroy(force, hard)
         },
         Commands::Log { oneline } => {
-            actions::log::run(oneline)
+            actions::log(oneline)
         },
         Commands::Diff {  } => {
-            actions::diff::run()
+            actions::diff()
         },
         Commands::Help { command, target } => {
-            actions::help::run(command, target)
+            actions::help(command, target)
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();

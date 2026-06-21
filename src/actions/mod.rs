@@ -7,3 +7,13 @@ pub mod rollback;
 pub mod restore;
 pub mod diff;
 pub mod export;
+
+pub use help::help;
+pub use init::init;
+pub use destroy::destroy;
+pub use commit::commit;
+pub use log::log;
+pub use rollback::rollback;
+pub use restore::restore;
+pub use diff::diff;
+pub use export::export;

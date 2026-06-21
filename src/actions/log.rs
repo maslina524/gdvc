@@ -7,7 +7,7 @@ use crate::ws::WsClient;
 use crate::level;
 use crate::files::get_level_path;
 
-pub fn run(oneline: bool) -> Result<(), Box<dyn std::error::Error>> {
+pub fn log(oneline: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let string = ws.get_level_string()?;

@@ -6,7 +6,7 @@ use crate::level::{get_marker, set_marker};
 use crate::files;
 use crate::consts::{ESC, YELLOW};
 
-pub fn run(force: bool, hard: bool) -> Result<(), Box<dyn std::error::Error>> {
+pub fn destroy(force: bool, hard: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut ws = WsClient::connect()?;
 
     let mut string = ws.get_level_string()?;

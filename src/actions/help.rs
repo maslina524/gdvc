@@ -4,7 +4,7 @@ use std::process::Command;
 
 use crate::terminal::print_by_line_str;
 
-pub fn run(command: Option<String>, target: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn help(command: Option<String>, target: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     if let Some(cmd) = command {
         cmd_handler(&cmd, &target)?;
         return Ok(());
