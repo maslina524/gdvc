@@ -6,22 +6,6 @@ use sha2::{Digest, Sha256};
 
 use crate::consts::{SECRET_KEY};
 
-pub fn parse_obj(string: &str) -> Option<HashMap<u16, String>> {
-    let mut ret = HashMap::new();
-
-    let string = string.trim_end_matches(';');
-    let parts = string.split(",").collect::<Vec<&str>>();
-    for chunk in parts.chunks(2) {
-        if chunk.len() != 2 { continue; }
-        let k = chunk[0].parse::<u16>().ok()?;
-        let v = chunk[1].to_owned();
-
-        ret.insert(k, v);
-    }
-
-    Some(ret)
-}
-
 pub fn get_string_hash(string: &str) -> String {
     let hash = Sha256::digest(&string);
     let hex_hash = hex::encode(hash);
