@@ -2,7 +2,6 @@ use std::fs::{self, File};
 use std::io::copy;
 use std::path::PathBuf;
 
-use crate::consts::ENV_VAR_NAME;
 use crate::ws::WsClient;
 use crate::{files, level};
 
