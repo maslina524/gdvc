@@ -89,6 +89,9 @@ enum Commands {
 
         #[arg(short = 'n', long = "name", required = false)]
         name: Option<String>,
+        
+        #[arg(short = 'f', long = "to_file", required = false)]
+        to_file: bool,
     },
 
     Import {
@@ -139,8 +142,8 @@ fn main() {
         Commands::Help { command, target } => {
             actions::help(command, target)
         },
-        Commands::Export { marker, path, name } => {
-            actions::export(marker, path, name)
+        Commands::Export { marker, path, name, to_file } => {
+            actions::export(marker, path, name, to_file)
         },
         Commands::Import { marker, path } => {
             actions::import(marker, path)

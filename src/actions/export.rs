@@ -1,7 +1,8 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::copy;
 use std::path::PathBuf;
 
+use crate::consts::ENV_VAR_NAME;
 use crate::ws::WsClient;
 use crate::{files, level};
 
@@ -34,7 +35,7 @@ fn zip_directory(input_dir: &PathBuf, output_zip: &PathBuf) -> zip::result::ZipR
     Ok(())
 }
 
-pub fn export(marker: Option<u32>, path: Option<String>, name: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn export(marker: Option<u32>, path: Option<String>, name: Option<String>, env: bool) -> Result<(), Box<dyn std::error::Error>> {
     let marker = match marker {
         Some(m) => m,
         None => {
@@ -44,6 +45,12 @@ pub fn export(marker: Option<u32>, path: Option<String>, name: Option<String>) -
             marker
         }
     };
+
+    if env {
+        let file_path = files::get_gdvc_path().join("export_marker");
+        fs::write(file_path, marker.to_string())?;
+        return Ok(())
+    }
 
     let path = match path {
         Some(p) => PathBuf::from(p),
