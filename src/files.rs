@@ -20,8 +20,8 @@ pub fn get_gdvc_path() -> PathBuf {
     dir
 }
 
-pub fn get_tinker_path() -> PathBuf {
-    let dir = get_gdvc_path().join("tinker");
+pub fn get_tinker_path(marker: u32) -> PathBuf {
+    let dir = get_level_path(marker).join("tinker");
     let _ = fs::create_dir_all(&dir);
     dir
 }

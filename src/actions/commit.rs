@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::Path;
 use std::path::PathBuf;
 use std::time::SystemTime;
 use std::fs::File;
@@ -10,6 +11,8 @@ use chrono::FixedOffset;
 use crate::consts::BLUE;
 use crate::consts::ESC;
 use crate::consts::YELLOW;
+use crate::files::get_tinker_path;
+use crate::tinker;
 use crate::ws::WsClient;
 use crate::level;
 use crate::files;
@@ -152,6 +155,19 @@ pub fn commit(message: &String, amend: bool) -> Result<(), Box<dyn std::error::E
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
         .as_secs() as u32;
+
+    let mut new_string = String::new();
+    let img_paths = tinker::image::get_reference_images_from_string(&string, marker, &mut new_string);
+    for img in &img_paths {
+        let name = Path::new(&img).file_name().unwrap();
+        let path = get_tinker_path(marker).join(name);
+        fs::copy(img, path)?;
+    }
+    let string = new_string;
+
+    if !img_paths.is_empty() {
+        ws.replace_level_string(&string)?;
+    }
 
     let encoded_string = level::encode_string(&string)?;
     
