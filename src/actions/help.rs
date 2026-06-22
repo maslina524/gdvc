@@ -24,6 +24,8 @@ pub fn help(command: Option<String>, target: Option<String>) -> Result<(), Box<d
     println!("\nWork on the current");
     println!("    commit      Record the changes");
     println!("    rollback    Restore the level to a previous commit");
+    println!("    export      Exports level history");
+    println!("    import      Imports level history");
 
     Ok(())
 }
