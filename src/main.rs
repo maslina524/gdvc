@@ -4,8 +4,10 @@ mod ws;
 mod level;
 mod consts;
 mod files;
-mod actions;
 mod terminal;
+
+mod actions;
+mod tinker;
 
 #[derive(Parser)]
 #[command(name = "gdvc")]
