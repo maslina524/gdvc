@@ -1,5 +1,5 @@
 use std::fs::{File, self};
-use std::io::{copy, self};
+use std::io::{self, ErrorKind, copy};
 use std::path::{Path, PathBuf};
 
 use zip::ZipArchive;
@@ -7,7 +7,23 @@ use zip::ZipArchive;
 use crate::ws::WsClient;
 use crate::{files, level};
 
+fn copy_dir_recursive(src_dir: &PathBuf, dst_dir: &PathBuf) -> io::Result<()> {
+    fs::create_dir_all(dst_dir)?;
 
+    for entry in fs::read_dir(src_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        let file_name = entry.file_name();
+        let dest_path = dst_dir.join(file_name);
+
+        if path.is_dir() {
+            copy_dir_recursive(&path, &dest_path)?;
+        } else {
+            fs::copy(&path, &dest_path)?;
+        }
+    }
+    Ok(())
+}
 
 fn unzip<P: AsRef<Path>>(zip_path: P, extract_path: P) -> io::Result<()> {
     let file = File::open(zip_path)?;
@@ -41,7 +57,7 @@ fn unzip<P: AsRef<Path>>(zip_path: P, extract_path: P) -> io::Result<()> {
     Ok(())
 }
 
-pub fn import(marker: Option<u32>, path: String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn import(marker: Option<u32>, path: Option<String>, to_file: bool) -> Result<(), Box<dyn std::error::Error>> {
     let marker = match marker {
         Some(m) => m,
         None => {
@@ -52,7 +68,26 @@ pub fn import(marker: Option<u32>, path: String) -> Result<(), Box<dyn std::erro
         }
     };
 
-    let path = PathBuf::from(path);
+    if to_file {
+        let file_path = files::get_gdvc_path().join("export_marker");
+        let exported_marker_str = match fs::read_to_string(file_path) {
+            Ok(m) => m,
+            Err(e) => {
+                return Err(match e.kind() {
+                    ErrorKind::NotFound => "Previously there were no exported levels with the --to_file (-f) flag".into(),
+                    _ => e.into()
+                });
+            }
+        };
+        let exported_marker = exported_marker_str.parse::<u32>()?;
+
+        let src_dir = files::get_level_path(exported_marker);
+        let dst_dir = files::get_level_path(marker);
+        copy_dir_recursive(&src_dir, &dst_dir)?;
+        return Ok(());
+    }
+
+    let path = PathBuf::from(path.unwrap());
 
     let extract_path = files::get_level_path(marker);
     unzip(path, extract_path)?;

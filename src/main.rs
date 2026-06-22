@@ -98,8 +98,11 @@ enum Commands {
         #[arg(short = 'm', long = "marker", required = false)]
         marker: Option<u32>,
 
-        #[arg(short = 'p', long = "path", required = true)]
-        path: String,
+        #[arg(short = 'p', long = "path", required_if_eq("to_file", "false"))]
+        path: Option<String>,
+
+        #[arg(short = 'f', long = "to_file", required = false)]
+        to_file: bool,
     },
 
     #[command(external_subcommand)]
@@ -145,8 +148,8 @@ fn main() {
         Commands::Export { marker, path, name, to_file } => {
             actions::export(marker, path, name, to_file)
         },
-        Commands::Import { marker, path } => {
-            actions::import(marker, path)
+        Commands::Import { marker, path, to_file } => {
+            actions::import(marker, path, to_file)
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();
