@@ -34,7 +34,7 @@ fn zip_directory(input_dir: &PathBuf, output_zip: &PathBuf) -> zip::result::ZipR
     Ok(())
 }
 
-pub fn export(marker: Option<u32>, path: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn export(marker: Option<u32>, path: Option<String>, name: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     let marker = match marker {
         Some(m) => m,
         None => {
@@ -50,8 +50,13 @@ pub fn export(marker: Option<u32>, path: Option<String>) -> Result<(), Box<dyn s
         None => std::env::current_dir()?
     };
 
+    let name = match name {
+        Some(n) => format!("{n}.zip"),
+        None => format!("{marker}_exported.zip")
+    };
+
     let input_dir = files::get_level_path(marker);
-    let output_zip = path.join(format!("{marker}_exported.zip"));
+    let output_zip = path.join(name);
     
     zip_directory(&input_dir, &output_zip)?;
 

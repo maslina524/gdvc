@@ -86,6 +86,9 @@ enum Commands {
 
         #[arg(short = 'p', long = "path", required = false)]
         path: Option<String>,
+
+        #[arg(short = 'n', long = "name", required = false)]
+        name: Option<String>,
     },
 
     Import {
@@ -136,8 +139,8 @@ fn main() {
         Commands::Help { command, target } => {
             actions::help(command, target)
         },
-        Commands::Export { marker, path } => {
-            actions::export(marker, path)
+        Commands::Export { marker, path, name } => {
+            actions::export(marker, path, name)
         },
         Commands::Import { marker, path } => {
             actions::import(marker, path)
