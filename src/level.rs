@@ -1,4 +1,4 @@
-use std::io::{Read, Write};
+use std::{collections::HashMap, io::{Read, Write}};
 
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
@@ -6,7 +6,23 @@ use sha2::{Digest, Sha256};
 
 use crate::consts::{SECRET_KEY};
 
-pub fn get_string_hash(string: &String) -> String {
+pub fn parse_obj(string: &str) -> Option<HashMap<u16, String>> {
+    let mut ret = HashMap::new();
+
+    let string = string.trim_end_matches(';');
+    let parts = string.split(",").collect::<Vec<&str>>();
+    for chunk in parts.chunks(2) {
+        if chunk.len() != 2 { continue; }
+        let k = chunk[0].parse::<u16>().ok()?;
+        let v = chunk[1].to_owned();
+
+        ret.insert(k, v);
+    }
+
+    Some(ret)
+}
+
+pub fn get_string_hash(string: &str) -> String {
     let hash = Sha256::digest(&string);
     let hex_hash = hex::encode(hash);
     hex_hash
@@ -31,7 +47,7 @@ pub fn get_marker(string: &str) -> Option<u32> {
     None
 }
 
-pub fn set_marker(string: &String, timestamp: u32) -> String {
+pub fn set_marker(string: &str, timestamp: u32) -> String {
     let split_i = string.find(';').unwrap();
     let object_string = &string[split_i..];
 
@@ -77,7 +93,7 @@ pub fn encode_string(string: &String) -> Result<String, String> {
 }
 
 /// https://boomlings.dev/topics/levelstring_encoding_decoding#decoding
-pub fn decode_string(string: &String) -> Result<String, String> {
+pub fn decode_string(string: &str) -> Result<String, String> {
     let base64_decoded = BASE64_URL_SAFE.decode(string).unwrap();
 
     let mut decoder = Decoder::new(&base64_decoded[..]).unwrap();
