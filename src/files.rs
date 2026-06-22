@@ -15,11 +15,21 @@ pub fn get_mod_settings(mod_id: &str) -> Option<Value> {
 }
 
 pub fn get_gdvc_path() -> PathBuf {
-    data_local_dir().unwrap().join(".gdvc")
+    let dir = data_local_dir().unwrap().join(".gdvc");
+    let _ = fs::create_dir_all(&dir);
+    dir
+}
+
+pub fn get_tinker_path() -> PathBuf {
+    let dir = get_gdvc_path().join("tinker");
+    let _ = fs::create_dir_all(&dir);
+    dir
 }
 
 pub fn get_level_path(marker: u32) -> PathBuf {
-    get_gdvc_path().join(marker.to_string())
+    let dir = get_gdvc_path().join(marker.to_string());
+    let _ = fs::create_dir_all(&dir);
+    dir
 }
 
 pub fn create_level_folder(marker: u32) -> Result<(), String> {

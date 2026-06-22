@@ -5,6 +5,7 @@ mod level;
 mod consts;
 mod files;
 mod terminal;
+mod object;
 
 mod actions;
 mod tinker;
