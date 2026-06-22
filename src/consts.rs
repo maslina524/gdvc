@@ -15,6 +15,4 @@ pub const INVERT: &str = "\x1b[0;30;47m";
 pub const ESC: &str = "\x1b[0m";
 pub const BOLD: &str = "\x1b[1m";
 
-pub const VERSION: &str = "1.1.0";
-
 pub const LINES_THRESHOLD: usize = 14;

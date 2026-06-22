@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io::{Read, Write}};
+use std::io::{Read, Write};
 
 use libflate::gzip::{Encoder, Decoder};
 use base64::prelude::*;
