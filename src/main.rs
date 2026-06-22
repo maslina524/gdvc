@@ -88,6 +88,14 @@ enum Commands {
         path: Option<String>,
     },
 
+    Import {
+        #[arg(short = 'm', long = "marker", required = false)]
+        marker: Option<u32>,
+
+        #[arg(short = 'p', long = "path", required = true)]
+        path: String,
+    },
+
     #[command(external_subcommand)]
     Other(Vec<String>),
 }
@@ -130,6 +138,9 @@ fn main() {
         },
         Commands::Export { marker, path } => {
             actions::export(marker, path)
+        },
+        Commands::Import { marker, path } => {
+            actions::import(marker, path)
         },
         Commands::Other(args) => {
             let cmd_name = args.first().unwrap();

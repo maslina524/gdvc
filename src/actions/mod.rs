@@ -7,6 +7,7 @@ pub mod rollback;
 pub mod restore;
 pub mod diff;
 pub mod export;
+pub mod import;
 
 pub use help::help;
 pub use init::init;
@@ -17,3 +18,4 @@ pub use rollback::rollback;
 pub use restore::restore;
 pub use diff::diff;
 pub use export::export;
+pub use import::import;
